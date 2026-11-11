@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- 改成你的：标签页标题 + 搜索结果里的描述 -->
-  <title>Cai Jiayi</title>
-  <meta name="description" content="Cai Jiayi 的个人主页。" />
+  <title>Cai Jiayi | 个人项目主页</title>
+  <meta name="description" content="Cai Jiayi 的个人项目主页，记录 Java、Spring Boot 和 MySQL 相关项目。" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='%23f4b6ca'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
   <script>document.documentElement.classList.add("js");</script>
@@ -20,7 +19,7 @@
       <a class="brand" href="#top">Cai Jiayi</a>
       <nav class="nav-links">
         <a href="#about" class="nav-link">关于</a>
-        <a href="#skills" class="nav-link">技能</a>
+        <a href="#skills" class="nav-link">技术栈</a>
         <a href="#projects" class="nav-link">项目</a>
         <a href="#contact" class="nav-link">联系</a>
       </nav>
@@ -42,7 +41,6 @@
     <!-- ==================== 首屏 ==================== -->
     <section class="hero" id="top">
       <div class="hero-inner">
-        <!-- 头像：想换成自己的图，把 src 改成本地文件（比如 avatar.jpg）即可 -->
         <div class="avatar-wrap">
           <span class="avatar-halo" aria-hidden="true"></span>
           <img
@@ -77,30 +75,31 @@
       <div class="about-layout">
         <div class="glass panel reveal">
           <p>
-            我是 Cai Jiayi，广东工业大学在读学生。平时用 Python 写点小东西，
-            最近在跟着实验室的课程学自然语言处理。
+            我是 Cai Jiayi，广东工业大学学生。目前主要使用 Java、Spring Boot
+            和 MySQL 做项目，也会写 HTML、CSS 和 JavaScript 页面。
           </p>
           <p>
-            我不算天赋型选手，但愿意把每件事做扎实：写完的代码要能跑通，
-            学过的知识要能讲明白。这个主页就是用来放这两样东西的。
+            这里整理我实际写过的项目和代码。页面描述尽量对应仓库里的实现，
+            方便别人直接查看、运行或指出问题。
           </p>
           <p class="last">
-            如果你也在广州念书，或者在做类似的方向，欢迎来聊。
+            当前展示的主项目是校园共享单车管理系统，使用 Java 17、
+            Spring Boot、Spring Data JPA 和 MySQL。
           </p>
         </div>
 
         <ul class="facts reveal">
           <li class="glass">
-            <b><span class="count" data-count="2">0</span></b>
-            <span>公开仓库</span>
+            <b class="small">Java 17</b>
+            <span>后端项目</span>
           </li>
           <li class="glass">
-            <b><span class="count" data-count="18">0</span></b>
-            <span>年度贡献</span>
+            <b class="small">Spring Boot</b>
+            <span>项目框架</span>
           </li>
           <li class="glass">
-            <b class="small">PRO</b>
-            <span>GitHub 会员</span>
+            <b class="small">MySQL</b>
+            <span>数据存储</span>
           </li>
         </ul>
       </div>
@@ -108,17 +107,19 @@
 
     <!-- ==================== 技能 ==================== -->
     <section class="section" id="skills">
-      <h2 class="sec-title reveal">技能</h2>
+      <h2 class="sec-title reveal">技术栈</h2>
       <div class="glass pad reveal">
         <ul class="chips">
-          <li class="c1">Python</li>
-          <li class="c2">Shell</li>
-          <li class="c3">Git</li>
-          <li class="c4">Linux</li>
-          <li class="c1">Jupyter</li>
-          <li class="c2">自然语言处理</li>
-          <li class="c3">Markdown</li>
-          <li class="c4">VS Code</li>
+          <li class="c1">Java</li>
+          <li class="c2">Spring Boot</li>
+          <li class="c3">Spring Data JPA</li>
+          <li class="c4">MySQL</li>
+          <li class="c1">HTML</li>
+          <li class="c2">CSS</li>
+          <li class="c3">JavaScript</li>
+          <li class="c4">Python</li>
+          <li class="c1">PyTorch</li>
+          <li class="c2">Git</li>
         </ul>
       </div>
     </section>
@@ -130,33 +131,33 @@
       <div class="cards">
         <a
           class="glass card reveal"
-          href="https://github.com/CHaRA-alive/Firstone-26-4-6"
+          href="https://github.com/CHaRA-alive/CHaRA-alive.github.io/tree/main/projects/bike-system"
           target="_blank"
           rel="noopener"
         >
           <span class="dot dot-1"></span>
-          <h3>Firstone-26-4-6</h3>
-          <p>我的第一个仓库。这里补一句话说明它是做什么的。</p>
+          <h3>校园共享单车管理系统</h3>
+          <p>Java 17 + Spring Boot + JPA + MySQL 的多角色管理系统，包含车辆、订单、账单、围栏、维修、安全记录和调度功能。</p>
           <span class="more">查看源码</span>
         </a>
 
         <a
           class="glass card reveal"
-          href="https://github.com/CHaRA-alive/CHaRA-alive.github.io/tree/main/projects/bike-system"
+          href="https://github.com/CHaRA-alive/Firstone-26-4-6"
           target="_blank"
           rel="noopener"
         >
           <span class="dot dot-2"></span>
-          <h3>校园共享单车管理系统</h3>
-          <p>基于 Spring Boot 与 MySQL，覆盖车辆、订单、账单和运维管理。</p>
+          <h3>PyTorch 分类练习</h3>
+          <p>使用 pandas、scikit-learn 和 PyTorch 完成数据划分、标准化、模型训练、早停与测试评估。</p>
           <span class="more">查看源码</span>
         </a>
 
-        <a class="glass card reveal" href="https://github.com/CHaRA-alive?tab=repositories" target="_blank" rel="noopener">
+        <a class="glass card reveal" href="https://github.com/CHaRA-alive/teaching-nlp" target="_blank" rel="noopener">
           <span class="dot dot-3"></span>
-          <h3>项目名称三</h3>
-          <p>一句话说明它解决什么问题、你负责哪部分。</p>
-          <span class="more">查看源码</span>
+          <h3>NLP 课程资料（学习 Fork）</h3>
+          <p>来自 GDUT-BI-Lab 的课程资料 fork，仅作为学习资料入口，不标注为原创项目。</p>
+          <span class="more">查看 Fork</span>
         </a>
       </div>
     </section>
@@ -166,7 +167,7 @@
       <h2 class="sec-title reveal">联系我</h2>
       <div class="glass pad reveal">
         <p class="contact-lead">
-          想一起做点东西、问问题，或者只是打个招呼，都可以直接找我。
+          可以通过 GitHub 或学校邮箱联系我。
         </p>
         <ul class="contact-list">
           <li>
@@ -175,11 +176,11 @@
           </li>
           <li>
             <span class="k">邮箱</span>
-            <a href="mailto:you@example.com">you@example.com</a>
+            <a href="mailto:3124002994@mail2.gdut.edu.cn">3124002994@mail2.gdut.edu.cn</a>
           </li>
           <li>
-            <span class="k">位置</span>
-            <span class="v">广东 · 广州</span>
+            <span class="k">学校</span>
+            <span class="v">广东工业大学 · 广州</span>
           </li>
         </ul>
       </div>

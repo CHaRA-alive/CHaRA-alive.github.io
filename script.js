@@ -48,8 +48,8 @@
   var typedEl = document.getElementById("typed");
   var LINES = [
     "广东工业大学 · 在读学生",
-    "在学 Python 与自然语言处理",
-    "慢慢来，比较快"
+    "Java / Spring Boot / MySQL",
+    "记录实际完成的项目"
   ];
 
   if (typedEl) {
