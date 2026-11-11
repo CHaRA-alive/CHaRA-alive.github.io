@@ -10,10 +10,6 @@
   <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
-  <!-- 天空、云、花瓣都画在这块 canvas 上 -->
-  <canvas id="scene" aria-hidden="true"></canvas>
-
-  <!-- ==================== 导航 ==================== -->
   <header class="nav" id="nav">
     <div class="nav-inner">
       <a class="brand" href="#top">Cai Jiayi</a>
@@ -52,60 +48,29 @@
 
         <p class="hero-hi">— 你好，我是 —</p>
         <h1 class="hero-name">Cai Jiayi</h1>
-        <p class="hero-typed">
-          <span id="typed"></span><span class="caret" aria-hidden="true"></span>
-        </p>
+        <p class="hero-subtitle">广东工业大学学生 · Java / Spring Boot / MySQL</p>
 
         <div class="hero-actions">
           <a class="btn btn-solid" href="https://github.com/CHaRA-alive" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn btn-line" href="#projects">看看项目</a>
+          <a class="btn btn-line" href="projects.html">按分类浏览项目</a>
         </div>
       </div>
-
-      <a class="scroll-cue" href="#about" aria-label="向下滚动">
-        <span class="cue-text">往下</span>
-        <span class="cue-track"><span class="cue-dot"></span></span>
-      </a>
     </section>
 
-    <!-- ==================== 关于 ==================== -->
     <section class="section" id="about">
       <h2 class="sec-title reveal">关于我</h2>
 
-      <div class="about-layout">
-        <div class="glass panel reveal">
-          <p>
-            我是 Cai Jiayi，广东工业大学学生。目前主要使用 Java、Spring Boot
-            和 MySQL 做项目，也会写 HTML、CSS 和 JavaScript 页面。
-          </p>
-          <p>
-            这里整理我实际写过的项目和代码。页面描述尽量对应仓库里的实现，
-            方便别人直接查看、运行或指出问题。
-          </p>
-          <p class="last">
-            当前展示的主项目是校园共享单车管理系统，使用 Java 17、
-            Spring Boot、Spring Data JPA 和 MySQL。
-          </p>
-        </div>
-
-        <ul class="facts reveal">
-          <li class="glass">
-            <b class="small">Java 17</b>
-            <span>后端项目</span>
-          </li>
-          <li class="glass">
-            <b class="small">Spring Boot</b>
-            <span>项目框架</span>
-          </li>
-          <li class="glass">
-            <b class="small">MySQL</b>
-            <span>数据存储</span>
-          </li>
-        </ul>
+      <div class="glass panel about-copy reveal">
+        <p>
+          我是 Cai Jiayi，广东工业大学学生。目前主要使用 Java、Spring Boot
+          和 MySQL 做项目，也会写 HTML、CSS 和 JavaScript 页面。
+        </p>
+        <p class="last">
+          这里整理我实际写过的项目和代码，并把原创项目、练习代码和学习资料分开标注。
+        </p>
       </div>
     </section>
 
-    <!-- ==================== 技能 ==================== -->
     <section class="section" id="skills">
       <h2 class="sec-title reveal">技术栈</h2>
       <div class="glass pad reveal">
@@ -124,9 +89,11 @@
       </div>
     </section>
 
-    <!-- ==================== 项目 ==================== -->
     <section class="section" id="projects">
-      <h2 class="sec-title reveal">项目</h2>
+      <div class="section-head reveal">
+        <h2 class="sec-title">重点项目</h2>
+        <a class="section-head-link" href="projects.html">按分类展开 →</a>
+      </div>
 
       <div class="cards">
         <a
@@ -135,9 +102,10 @@
           target="_blank"
           rel="noopener"
         >
-          <span class="dot dot-1"></span>
+          <span class="project-category project-category-pink">后端与数据库</span>
           <h3>校园共享单车管理系统</h3>
-          <p>Java 17 + Spring Boot + JPA + MySQL 的多角色管理系统，包含车辆、订单、账单、围栏、维修、安全记录和调度功能。</p>
+          <p>多角色业务系统，包含车辆、订单、账单、维修、安全记录和调度功能。</p>
+          <div class="project-tech"><span>Java 17</span><span>Spring Boot</span><span>MySQL</span></div>
           <span class="more">查看源码</span>
         </a>
 
@@ -147,22 +115,23 @@
           target="_blank"
           rel="noopener"
         >
-          <span class="dot dot-2"></span>
+          <span class="project-category project-category-blue">机器学习与数据分析</span>
           <h3>PyTorch 分类练习</h3>
-          <p>使用 pandas、scikit-learn 和 PyTorch 完成数据划分、标准化、模型训练、早停与测试评估。</p>
+          <p>Python 分类实验代码，包含数据处理、模型训练、早停和测试评估。</p>
+          <div class="project-tech"><span>Python</span><span>PyTorch</span><span>scikit-learn</span></div>
           <span class="more">查看源码</span>
         </a>
 
         <a class="glass card reveal" href="https://github.com/CHaRA-alive/teaching-nlp" target="_blank" rel="noopener">
-          <span class="dot dot-3"></span>
-          <h3>NLP 课程资料（学习 Fork）</h3>
-          <p>来自 GDUT-BI-Lab 的课程资料 fork，仅作为学习资料入口，不标注为原创项目。</p>
+          <span class="project-category project-category-lav">课程与学习资料</span>
+          <h3>NLP 课程资料</h3>
+          <p>来自 GDUT-BI-Lab 的 fork，只作为学习资料入口，不作为原创项目。</p>
+          <div class="project-tech"><span>Fork</span><span>课程资料</span></div>
           <span class="more">查看 Fork</span>
         </a>
       </div>
     </section>
 
-    <!-- ==================== 联系 ==================== -->
     <section class="section" id="contact">
       <h2 class="sec-title reveal">联系我</h2>
       <div class="glass pad reveal">
