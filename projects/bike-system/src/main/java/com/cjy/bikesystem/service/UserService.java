@@ -78,10 +78,14 @@ public class UserService {
 
     // 10. 充值余额
     public boolean rechargeBalance(String userId, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return false;
+        }
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setBalance(user.getBalance().add(amount));
+            BigDecimal balance = user.getBalance() == null ? BigDecimal.ZERO : user.getBalance();
+            user.setBalance(balance.add(amount));
             userRepository.save(user);
             return true;
         }

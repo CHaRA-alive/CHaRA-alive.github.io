@@ -1,6 +1,7 @@
 package com.cjy.bikesystem.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -28,4 +29,12 @@ public class SecurityRecord {
 
     @Column(name = "HandleStatus", length = 10)
     private String handleStatus;
+
+    @Column(name = "ViolationType", length = 20)
+    private String violationType;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getViolationBikeId() {
+        return bike == null ? null : bike.getBikeId();
+    }
 }

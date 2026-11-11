@@ -1,708 +1,313 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>校园共享单车系统</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', sans-serif;
-        }
-
-        :root {
-            --primary: #36C5F0;    /* Slack蓝色 */
-            --secondary: #2EB67D;  /* Slack绿色 */
-            --accent: #ECB22E;     /* Slack黄色 */
-            --danger: #E01E5A;     /* Slack红色 */
-            --dark: #1D1D1D;       /* 深灰色 */
-            --light: #F6F6F6;      /* 浅灰色 */
-            --card-bg: #FFFFFF;    /* 卡片背景 */
-            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            --radius: 16px;
-        }
-
-        body {
-            background: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* 背景装饰 */
-        .bg-decorations {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, rgba(54, 197, 240, 0.1) 100%);
-            filter: blur(60px);
-        }
-
-        .circle-1 {
-            width: 400px;
-            height: 400px;
-            top: -200px;
-            right: -200px;
-        }
-
-        .circle-2 {
-            width: 300px;
-            height: 300px;
-            bottom: -150px;
-            left: -150px;
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(46, 182, 125, 0.1) 100%);
-        }
-
-        /* 主容器 */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 导航栏 */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 60px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 22px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 16px;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-            padding: 8px 0;
-            position: relative;
-        }
-
-        .nav-link:hover {
-            opacity: 1;
-            color: var(--primary);
-        }
-
-        .nav-link.active {
-            opacity: 1;
-            color: var(--primary);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-            border-radius: 1px;
-        }
-
-        /* 英雄区域 */
-        .hero {
-            text-align: center;
-            padding: 60px 0;
-            margin-bottom: 80px;
-        }
-
-        .hero h1 {
-            font-size: 56px;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
-        }
-
-        /* 统计卡片 */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 80px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 32px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
-        .stat-number {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--dark) 0%, #444 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label {
-            font-size: 16px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        /* 登录卡片 */
-        .login-section {
-            margin-bottom: 80px;
-        }
-
-        .section-title {
-            font-size: 32px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 48px;
-            color: var(--dark);
-        }
-
-        .login-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .login-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 32px;
-            color: white;
-        }
-
-        .login-card.user .login-icon {
-            background: linear-gradient(135deg, var(--primary) 0%, #2AA8D9 100%);
-        }
-
-        .login-card.admin .login-icon {
-            background: linear-gradient(135deg, var(--secondary) 0%, #26A269 100%);
-        }
-
-        .login-card.security .login-icon {
-            background: linear-gradient(135deg, var(--accent) 0%, #D8A01E 100%);
-        }
-
-        .login-card h3 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--dark);
-        }
-
-        .login-card p {
-            color: #666;
-            margin-bottom: 32px;
-            line-height: 1.6;
-        }
-
-        .login-btn {
-            display: inline-block;
-            padding: 14px 32px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(54, 197, 240, 0.3);
-        }
-
-        .login-card.user .login-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, #2AA8D9 100%);
-        }
-
-        .login-card.admin .login-btn {
-            background: linear-gradient(135deg, var(--secondary) 0%, #26A269 100%);
-        }
-
-        .login-card.security .login-btn {
-            background: linear-gradient(135deg, var(--accent) 0%, #D8A01E 100%);
-        }
-
-        /* 系统状态 */
-        .system-status {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            margin-bottom: 80px;
-        }
-
-        .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(46, 182, 125, 0.1) 100%);
-            border-radius: 50px;
-            font-weight: 600;
-            color: var(--secondary);
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--secondary);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-        }
-
-        .status-item {
-            padding: 20px;
-            background: var(--light);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .status-item .icon {
-            font-size: 24px;
-            margin-bottom: 12px;
-            color: var(--primary);
-        }
-
-        /* 页脚 */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            color: #666;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            margin-top: 80px;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            margin-bottom: 24px;
-        }
-
-        .footer-link {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary);
-        }
-
-        .copyright {
-            font-size: 14px;
-            color: #999;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 20px;
-                margin-bottom: 40px;
-            }
-
-            .nav-links {
-                gap: 20px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .hero-subtitle {
-                font-size: 16px;
-                padding: 0 20px;
-            }
-
-            .login-cards {
-                grid-template-columns: 1fr;
-                padding: 0 20px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                padding: 0 20px;
-            }
-
-            .system-status {
-                margin: 0 20px 40px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="青骑智行校园共享单车，在校园里自由借还，规范停放，轻松抵达每一处。">
+  <title>青骑智行 · 校园共享单车</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/rider.css">
 </head>
 <body>
-<!-- 背景装饰 -->
-<div class="bg-decorations">
-    <div class="bg-circle circle-1"></div>
-    <div class="bg-circle circle-2"></div>
-</div>
+  <header class="wd-header">
+    <div class="wd-container wd-header-inner">
+      <a class="wd-brand" href="/" aria-label="青骑智行首页">
+        <span class="wd-seal">青骑</span>
+        <span class="wd-brand-copy">
+          <b>青骑智行</b>
+          <span>QINGQI · CAMPUS RIDE</span>
+        </span>
+      </a>
+      <nav class="wd-nav">
+        <a href="#ride"><i class="wd-nav-glyph">骑</i>骑行方式</a>
+        <a href="#routes"><i class="wd-nav-glyph">行</i>今日去处</a>
+        <a href="#safety"><i class="wd-nav-glyph">停</i>文明停放</a>
+        <a href="#access"><i class="wd-nav-glyph">入</i>角色入口</a>
+      </nav>
+      <div class="wd-header-right">
+        <span class="wd-live"><i></i><span id="system-status">校园车队在线</span></span>
+        <a class="wd-login-btn" href="/login.html">
+          <span class="wd-login-full">登录 · 开始骑行</span>
+          <span class="wd-login-compact">登录</span>
+          <span data-icon="arrow-right"></span>
+        </a>
+      </div>
+    </div>
+  </header>
 
-<!-- 主容器 -->
-<div class="main-container">
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <a href="#" class="logo">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
+  <main>
+    <section class="wd-hero">
+      <img class="wd-hero-bg" src="/images/campus-ride-hero.svg" alt="清晨校园里的骑行路">
+      <div class="wd-hero-mask"></div>
+      <div class="wd-container wd-hero-inner">
+        <div class="wd-hero-copy">
+          <em class="wd-hero-eyebrow">QINGQI · CAMPUS MOBILITY</em>
+          <h1>沿着校园的风，<br>骑向<em>下一程</em>。</h1>
+          <p>从宿舍楼下的第一辆车，到图书馆闭馆后的最后一程。找车、开锁、骑行、还车，一站完成。</p>
+          <div class="wd-hero-actions">
+            <a class="wd-btn wd-btn-primary" href="/login.html?role=user">
+              立即用车
+              <span data-icon="arrow-right"></span>
+            </a>
+            <a class="wd-btn wd-btn-outline-light" href="#routes">看看去哪儿</a>
+          </div>
+        </div>
+        <aside class="wd-hero-side">
+          <div class="wd-live-card">
+            <h4>此刻的青骑</h4>
+            <p>校园车队 · 实时数据</p>
+            <div class="wd-live-list">
+              <div><span>可借车辆</span><b id="hero-available">--</b><small>辆</small></div>
+              <div><span>正在骑行</span><b id="hero-inuse">--</b><small>辆</small></div>
+              <div><span>今日骑行</span><b id="hero-orders">--</b><small>次</small></div>
             </div>
-            <span>校园共享单车</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="wd-container wd-notice">
+      <span class="wd-notice-tag"><span data-icon="bell"></span> 骑行公告</span>
+      <span class="wd-notice-text">请在教学楼、宿舍区、图书馆等推荐区域规范停放；发现故障车辆，可在用户中心一键报修。</span>
+      <div class="wd-hot">
+        <span>去往：</span>
+        <a href="/login.html?role=user">宿舍区</a>
+        <a href="/login.html?role=user">教学区</a>
+        <a href="/login.html?role=user">图书馆</a>
+      </div>
+    </div>
+
+    <section class="wd-section wd-container" id="ride">
+      <div class="wd-sec-head">
+        <div class="wd-sec-title">
+          <em class="wd-eyebrow">RIDE · 一种更轻的抵达</em>
+          <h2>从一辆车，认识一座校园</h2>
+          <div class="wd-diamond-line"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="wd-sec-intro">不用等校车，不必绕远路。校园里的每一处生活半径，都可以被一辆单车轻轻连起来。</p>
+      </div>
+
+      <div class="wd-feature-strip">
+        <article class="wd-feature-main">
+          <div class="wd-feature-visual">
+            <img src="/images/campus-route-map.svg" alt="校园骑行路线手绘图">
+          </div>
+          <div class="wd-feature-copy">
+            <em>ROUTE · 校园漫游</em>
+            <h3>把校园，<br>骑成一条线</h3>
+            <p>从宿舍出发，穿过林荫道，经过图书馆与食堂，最后在体育场看一场落日。每一次出发，都是自己的校园路线。</p>
+            <div class="wd-feature-tags">
+              <span class="wd-tag">随借随还</span>
+              <span class="wd-tag">分钟计费</span>
+              <span class="wd-tag">推荐停车点</span>
+            </div>
+          </div>
+        </article>
+        <div class="wd-feature-list">
+          <article class="wd-small-feature">
+            <div class="wd-small-feature-head">
+              <span data-icon="clock"></span>
+              <i>01 / 朝夕</i>
+            </div>
+            <div>
+              <h3>赶得上早八</h3>
+              <p>宿舍到教学楼的最后一公里，不用再踩着铃声奔跑。</p>
+            </div>
+          </article>
+          <article class="wd-small-feature">
+            <div class="wd-small-feature-head">
+              <span data-icon="moon"></span>
+              <i>02 / 夜归</i>
+            </div>
+            <div>
+              <h3>也送你回宿舍</h3>
+              <p>图书馆闭馆后的晚风里，还有一盏车灯和一程好路。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="wd-section wd-container" id="routes">
+      <div class="wd-sec-head">
+        <div class="wd-sec-title">
+          <em class="wd-eyebrow">TODAY · 今日去处</em>
+          <h2>今天，想骑去哪里？</h2>
+          <div class="wd-diamond-line"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="wd-sec-intro">车辆按区域归集，出发前就能看到附近的可用车，少走一段回头路。</p>
+      </div>
+
+      <div class="wd-route-grid">
+        <a class="wd-route-card" href="/login.html?role=user">
+          <div class="wd-route-art">
+            <svg viewBox="0 0 460 180" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="route-a" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#d9eee2"/><stop offset="1" stop-color="#f4f8f4"/>
+                </linearGradient>
+              </defs>
+              <rect width="460" height="180" fill="url(#route-a)"/>
+              <circle cx="376" cy="42" r="31" fill="#ffffff" opacity=".8"/>
+              <path d="M0 145 75 92l72 48 68-58 74 59 72-72 99 44v67H0Z" fill="#bfe0cf" opacity=".9"/>
+              <path d="M82 150V96h64v54z" fill="#99c8b0"/><path d="M96 110h13v17H96zM121 110h13v17h-13z" fill="#f8f4ea" opacity=".8"/>
+              <path d="M188 150V80h82v70z" fill="#a9d2bd"/><path d="m182 82 47-31 47 31z" fill="#8fc1a8"/>
+              <path d="M0 160c96-35 182-27 250-4s142 17 210-5v29H0z" fill="#f7faf7" opacity=".6"/>
+              <path d="M25 57c44-18 80-15 114 0" fill="none" stroke="#5f937a" stroke-opacity=".38" stroke-width="1.5"/>
+            </svg>
+            <span class="wd-route-index">NO. 01</span>
+          </div>
+          <div class="wd-route-body">
+            <h3>去教学区 <span>早八与晚自习</span></h3>
+            <p>宿舍楼下的车，正好赶上第一节早课。</p>
+            <div class="wd-route-meta"><span>约 6 分钟</span><span>林荫道</span><b id="route-teaching">-- 辆可借</b></div>
+          </div>
         </a>
 
-        <div class="nav-links">
-            <a href="#" class="nav-link active">首页</a>
-            <a href="#features" class="nav-link">功能介绍</a>
-            <a href="#status" class="nav-link">系统状态</a>
-            <a href="#contact" class="nav-link">联系我们</a>
-        </div>
-    </nav>
+        <a class="wd-route-card" href="/login.html?role=user">
+          <div class="wd-route-art">
+            <svg viewBox="0 0 460 180" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="route-b" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#d9eee2"/><stop offset="1" stop-color="#f4f8f4"/>
+                </linearGradient>
+              </defs>
+              <rect width="460" height="180" fill="url(#route-b)"/>
+              <rect x="92" y="66" width="272" height="96" fill="#9bc9b2"/>
+              <path d="M78 68h300l-28-34H108z" fill="#afd8c2"/>
+              <path d="M220 38V18" stroke="#4d8269" stroke-opacity=".65" stroke-width="2"/>
+              <circle cx="220" cy="16" r="4" fill="#4d8269" opacity=".7"/>
+              <path d="M124 96h28v40h-28zM178 96h28v40h-28zM254 96h28v40h-28zM308 96h28v40h-28z" fill="#f8f4ea" opacity=".74"/>
+              <path d="M222 150v-28h16v28z" fill="#f8f4ea" opacity=".8"/>
+              <path d="M0 162c88-18 170-18 238 0s140 18 222 0v18H0z" fill="#f7faf7" opacity=".55"/>
+              <path d="M322 55c33-20 70-17 104 0" fill="none" stroke="#5f937a" stroke-opacity=".42"/>
+            </svg>
+            <span class="wd-route-index">NO. 02</span>
+          </div>
+          <div class="wd-route-body">
+            <h3>去图书馆 <span>找一个靠窗的位置</span></h3>
+            <p>把车停在北门，带一本书坐到日落。</p>
+            <div class="wd-route-meta"><span>约 8 分钟</span><span>安静路线</span><b id="route-library">-- 辆可借</b></div>
+          </div>
+        </a>
 
-    <!-- 英雄区域 -->
-    <section class="hero">
-        <h1>智能共享单车管理系统</h1>
-        <p class="hero-subtitle">
-
-            为师生提供便捷、高效、智能的共享单车服务
-        </p>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="total-users">1500+</div>
-                <div class="stat-label">注册用户</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="total-bikes">500+</div>
-                <div class="stat-label">共享车辆</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="daily-rides">8000+</div>
-                <div class="stat-label">日均骑行</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="coverage">95%</div>
-                <div class="stat-label">校园覆盖</div>
-            </div>
-        </div>
+        <a class="wd-route-card" href="/login.html?role=user">
+          <div class="wd-route-art">
+            <svg viewBox="0 0 460 180" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="route-c" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#d9eee2"/><stop offset="1" stop-color="#e8f4ed"/>
+                </linearGradient>
+              </defs>
+              <rect width="460" height="180" fill="url(#route-c)"/>
+              <ellipse cx="230" cy="162" rx="195" ry="38" fill="#a5d0ba" opacity=".55"/>
+              <ellipse cx="230" cy="162" rx="130" ry="22" fill="none" stroke="#ffffff" stroke-opacity=".72" stroke-width="2"/>
+              <ellipse cx="230" cy="162" rx="76" ry="12" fill="none" stroke="#ffffff" stroke-opacity=".54"/>
+              <path d="M0 130c76-40 122-28 170-10s92 24 140 4 100-26 150-8v64H0z" fill="#f7f3e9" opacity=".55"/>
+              <path d="M72 65c8-30 48-44 74-22 26-12 55 8 52 35 0 14-14 21-26 21H90c-14 0-22-17-18-34z" fill="#ffffff" opacity=".72"/>
+              <circle cx="354" cy="54" r="30" fill="#ffffff" opacity=".8"/>
+              <path d="M325 110c18-13 42-13 60 0" fill="none" stroke="#5f937a" stroke-opacity=".38"/>
+            </svg>
+            <span class="wd-route-index">NO. 03</span>
+          </div>
+          <div class="wd-route-body">
+            <h3>去体育场 <span>去看一场落日</span></h3>
+            <p>下课后骑到操场，晚风正好，跑道还亮着。</p>
+            <div class="wd-route-meta"><span>约 10 分钟</span><span>晚风路线</span><b id="route-sports">-- 辆可借</b></div>
+          </div>
+        </a>
+      </div>
     </section>
 
-    <!-- 登录卡片 -->
-    <section class="login-section" id="features">
-        <h2 class="section-title">选择登录身份</h2>
-        <div class="login-cards">
-            <!-- 用户登录 -->
-            <div class="login-card user">
-                <div class="login-icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
-                <h3>用户登录</h3>
-                <p>
-                    学生、教职工使用<br>
-                    扫码用车、查看订单、账户管理
-                </p>
-                <a href="user-login.html" class="login-btn">用户登录</a>
-            </div>
-
-            <!-- 管理员登录 -->
-            <div class="login-card admin">
-                <div class="login-icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                </div>
-                <h3>管理后台</h3>
-                <p>
-                    系统管理员、运维人员使用<br>
-                    车辆管理、用户管理、数据统计
-                </p>
-                <a href="admin-login.html" class="login-btn">管理员登录</a>
-            </div>
-
-            <!-- 安保登录 -->
-            <div class="login-card security">
-                <div class="login-icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </div>
-                <h3>安保系统</h3>
-                <p>
-                    校园安保人员使用<br>
-                    违规上报、秩序维护、异常处理
-                </p>
-                <a href="security-login.html" class="login-btn">安保登录</a>
-            </div>
+    <section class="wd-safety-band" id="safety">
+      <div class="wd-container wd-safety-inner">
+        <div class="wd-safety-copy">
+          <em>PARK WITH CARE · 文明停放</em>
+          <h2>把车停好，<br>是下一次相遇的开始。</h2>
+          <p>校园道路很窄，人很多。请把车辆停进推荐区域，不占消防通道，不挡宿舍门口，让每一辆车都能被下一位同学顺利找到。</p>
         </div>
+        <div class="wd-safety-rules">
+          <div class="wd-safety-rule"><b>一</b><span>停入推荐区，车头朝向一致</span></div>
+          <div class="wd-safety-rule"><b>二</b><span>不占消防通道、盲道和出入口</span></div>
+          <div class="wd-safety-rule"><b>三</b><span>发现故障，及时在系统内报修</span></div>
+          <div class="wd-safety-rule"><b>四</b><span>结束骑行后，确认锁车再离开</span></div>
+        </div>
+      </div>
     </section>
 
-    <!-- 系统状态 -->
-    <section class="system-status" id="status">
-        <div class="status-header">
-            <h2 class="section-title" style="text-align: left; margin: 0;">系统状态</h2>
-            <div class="status-indicator">
-                <span class="status-dot"></span>
-                <span>运行正常</span>
-            </div>
+    <section class="wd-section wd-container" id="access">
+      <div class="wd-sec-head">
+        <div class="wd-sec-title">
+          <em class="wd-eyebrow">ACCESS · 角色入口</em>
+          <h2>从你的视角，进入青骑</h2>
+          <div class="wd-diamond-line"><i></i><i></i><i></i><i></i></div>
         </div>
-
-        <div class="status-grid">
-            <div class="status-item">
-                <div class="icon">🔄</div>
-                <h4>实时同步</h4>
-                <p>数据实时更新</p>
-            </div>
-            <div class="status-item">
-                <div class="icon">🔒</div>
-                <h4>安全加密</h4>
-                <p>传输全程加密</p>
-            </div>
-            <div class="status-item">
-                <div class="icon">⚡</div>
-                <h4>快速响应</h4>
-                <p>平均响应 &lt; 100ms</p>
-            </div>
-            <div class="status-item">
-                <div class="icon">📊</div>
-                <h4>数据分析</h4>
-                <p>智能数据统计</p>
-            </div>
-        </div>
+        <p class="wd-sec-intro">学生骑行、运营调度、现场维护与校园安全，各自拥有独立的工作界面。</p>
+      </div>
+      <div class="wd-role-strip">
+        <a class="wd-role-entry" href="/login.html?role=user">
+          <div>
+            <div class="wd-role-entry-top"><span class="wd-role-glyph">骑</span><span class="wd-tag">学生端</span></div>
+            <h3>我的骑行</h3>
+            <p>找车、开锁、支付与报修</p>
+          </div>
+          <div class="wd-role-link">进入用户中心 <span data-icon="arrow-right"></span></div>
+        </a>
+        <a class="wd-role-entry" href="/login.html?role=admin">
+          <div>
+            <div class="wd-role-entry-top"><span class="wd-role-glyph">营</span><span class="wd-tag">运营端</span></div>
+            <h3>运营与调度</h3>
+            <p>经营总览、车辆资产与智能调度</p>
+          </div>
+          <div class="wd-role-link">进入运营工作台 <span data-icon="arrow-right"></span></div>
+        </a>
+        <a class="wd-role-entry" href="/login.html?role=security">
+          <div>
+            <div class="wd-role-entry-top"><span class="wd-role-glyph">守</span><span class="wd-tag">现场端</span></div>
+            <h3>运维与安全</h3>
+            <p>工单处理、巡检与违规治理</p>
+          </div>
+          <div class="wd-role-link">进入现场工作台 <span data-icon="arrow-right"></span></div>
+        </a>
+      </div>
     </section>
+  </main>
 
-    <!-- 页脚 -->
-    <footer id="contact">
-        <div class="footer-links">
-            <a href="#" class="footer-link">使用指南</a>
-            <a href="#" class="footer-link">常见问题</a>
-            <a href="#" class="footer-link">联系我们</a>
-            <a href="#" class="footer-link">隐私政策</a>
-        </div>
-        <p class="copyright">
-            © 2024 校园共享单车管理系统 | 开发者：蔡迦逸 | 学号：3124002994<br>
-            指导老师：吴学雁 | 课程设计项目
-        </p>
-    </footer>
-</div>
+  <footer class="wd-footer">
+    <div class="wd-footer-pattern"></div>
+    <div class="wd-container wd-footer-grid">
+      <div class="wd-footer-brand">
+        <h3>青骑智行</h3>
+        <p class="slogan">校园漫游 · 轻装出发</p>
+        <p>一辆车，一段路，一座校园的日常。<br>让每一次借还，都成为下一次相遇的开始。</p>
+      </div>
+      <div class="wd-footer-col">
+        <h4>骑行服务</h4>
+        <a href="/login.html?role=user">扫码用车</a>
+        <a href="/login.html?role=user">我的订单</a>
+        <a href="/login.html?role=user">余额与账单</a>
+        <a href="/login.html?role=user">车辆报修</a>
+      </div>
+      <div class="wd-footer-col">
+        <h4>校园出行</h4>
+        <a href="#routes">今日去处</a>
+        <a href="#safety">文明停放</a>
+        <a href="#ride">骑行方式</a>
+      </div>
+      <div class="wd-footer-col">
+        <h4>运营与安全</h4>
+        <a href="/login.html?role=admin">运营工作台</a>
+        <a href="/login.html?role=security">安全记录</a>
+        <a href="/login.html?role=admin">智能调度</a>
+      </div>
+    </div>
+    <div class="wd-container wd-footer-note">
+      <span>© <span id="footer-year"></span> 青骑智行校园共享单车智能运营系统</span>
+      <span>页面数据来自真实 MySQL 业务库</span>
+    </div>
+  </footer>
 
-<script>
-    // 简单的数字动画效果
-    function animateNumber(element, target) {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            element.textContent = Math.floor(current).toLocaleString() + (target > 1000 ? '+' : '');
-        }, 20);
-    }
-
-    // 页面加载后执行
-    document.addEventListener('DOMContentLoaded', function() {
-        // 导航栏滚动效果
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('section');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').substring(1) === current) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // 平滑滚动
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // 模拟数据加载（实际项目中应该调用API）
-        setTimeout(() => {
-            animateNumber(document.getElementById('total-users'), 1524);
-            animateNumber(document.getElementById('total-bikes'), 523);
-            animateNumber(document.getElementById('daily-rides'), 8250);
-        }, 1000);
-
-        // 检查系统状态
-        checkSystemStatus();
-    });
-
-    // 检查系统状态
-    async function checkSystemStatus() {
-        try {
-            // 这里可以调用你的健康检查API
-            // const response = await fetch('/api/health');
-            // 为了演示，我们直接设为正常
-            const statusIndicator = document.querySelector('.status-indicator');
-            const statusDot = document.querySelector('.status-dot');
-
-            // 模拟API调用延迟
-            setTimeout(() => {
-                statusIndicator.innerHTML = `
-                    <span class="status-dot"></span>
-                    <span>运行正常</span>
-                `;
-            }, 500);
-
-        } catch (error) {
-            console.log('系统状态检查:', error.message);
-        }
-    }
-</script>
+  <script src="/js/api.js"></script>
+  <script src="/js/landing.js"></script>
 </body>
 </html>

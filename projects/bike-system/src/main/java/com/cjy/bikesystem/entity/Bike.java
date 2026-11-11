@@ -25,4 +25,7 @@ public class Bike {
     // 修改这里：DECIMAL(10,6) 用 BigDecimal
     @Column(name = "Location", precision = 10, scale = 6)
     private BigDecimal location;
+
+    @Column(name = "Area", length = 50)
+    private String area;
 }

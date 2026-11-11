@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 · 青骑智行</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/rider.css">
+</head>
+<body>
+  <main class="wd-auth-page">
+    <section class="wd-auth-visual">
+      <img src="/images/campus-ride-hero.svg" alt="校园骑行插画">
+      <a class="wd-auth-brand" href="/">
+        <span class="wd-seal">青骑</span>
+        <span>
+          <b>青骑智行</b>
+          <span>QINGQI · CAMPUS RIDE</span>
+        </span>
+      </a>
+      <div class="wd-auth-quote">
+        <p>「风从教学楼后面吹来，<br>车铃一响，今天就有了方向。」</p>
+        <span>—— 校园骑行手记</span>
+      </div>
+    </section>
+
+    <section class="wd-auth-panel">
+      <div class="wd-auth-box">
+        <em>SIGN IN · 青骑智行</em>
+        <h1>欢迎回来</h1>
+        <p>选择身份，回到你的校园骑行日常。</p>
+
+        <div class="wd-role-tabs" role="tablist" aria-label="登录身份">
+          <button class="wd-role-tab active" type="button" data-role="user" role="tab">学生</button>
+          <button class="wd-role-tab" type="button" data-role="admin" role="tab">管理</button>
+          <button class="wd-role-tab" type="button" data-role="security" role="tab">安保</button>
+        </div>
+
+        <form class="wd-auth-form" id="login-form">
+          <div class="wd-auth-field">
+            <label id="account-label" for="account">用户编号 / 学号</label>
+            <input id="account" name="account" autocomplete="username" placeholder="请输入用户编号" required>
+          </div>
+          <div class="wd-auth-field">
+            <label for="phone">手机号验证</label>
+            <input id="phone" name="phone" inputmode="numeric" autocomplete="current-password" placeholder="请输入绑定手机号" required>
+          </div>
+          <div class="wd-auth-error" id="login-error"></div>
+          <button class="wd-auth-submit" id="login-submit" type="submit">进入青骑</button>
+        </form>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:17px;border-top:1px dashed var(--wd-line)">
+          <span style="font-size:10px;color:var(--wd-ink-faint);letter-spacing:.08em">演示账号 · 点击填入</span>
+          <a class="wd-text-link" href="/">返回首页 →</a>
+        </div>
+        <div class="wd-demo-list" id="demo-accounts"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

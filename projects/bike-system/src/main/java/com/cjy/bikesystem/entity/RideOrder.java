@@ -1,6 +1,7 @@
 package com.cjy.bikesystem.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,4 +43,14 @@ public class RideOrder {
 
     @Column(name = "PayStatus", length = 10)
     private String payStatus;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getUserId() {
+        return user == null ? null : user.getUserId();
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getBikeId() {
+        return bike == null ? null : bike.getBikeId();
+    }
 }

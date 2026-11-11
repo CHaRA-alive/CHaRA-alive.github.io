@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="title desc">
+  <title id="title">校园骑行路线手绘图</title>
+  <desc id="desc">宣纸底色上的校园道路、建筑、树木和靛蓝色骑行路线。</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f8f4"/>
+      <stop offset="1" stop-color="#e3eee7"/>
+    </linearGradient>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30 0H0V30" fill="none" stroke="#3f6656" stroke-opacity=".06" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#16304d" flood-opacity=".12"/>
+    </filter>
+  </defs>
+  <rect width="900" height="600" fill="url(#paper)"/>
+  <rect width="900" height="600" fill="url(#grid)"/>
+
+  <g opacity=".55" fill="none" stroke="#3f6656">
+    <path d="M-40 112C96 72 166 130 268 104s166-6 242 30 205 40 430-24" stroke-width="1" stroke-dasharray="4 8"/>
+    <path d="M-30 504C112 456 202 522 314 490s218-26 324 20 184 18 292-20" stroke-width="1" stroke-dasharray="4 8"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <path d="M80 512C160 430 318 452 402 364s98-178 242-190 184 74 194 168-58 188-188 216-502 36-570-46z"
+          fill="#fbfdfb" stroke="#d8e4dc"/>
+  </g>
+
+  <g fill="#dfece5" stroke="#3f6656" stroke-opacity=".2">
+    <rect x="160" y="168" width="132" height="86" rx="5"/>
+    <rect x="162" y="366" width="160" height="92" rx="5"/>
+    <rect x="570" y="138" width="178" height="108" rx="5"/>
+    <rect x="604" y="378" width="160" height="86" rx="5"/>
+  </g>
+  <g fill="#3f6656" opacity=".72">
+    <path d="M160 168h132v10H160z"/>
+    <path d="M162 366h160v10H162z"/>
+    <path d="M570 138h178v10H570z"/>
+    <path d="M604 378h160v10H604z"/>
+  </g>
+  <g fill="#f8fbf9" stroke="#3f6656" stroke-opacity=".22">
+    <path d="M190 202h18v18h-18zM220 202h18v18h-18zM250 202h18v18h-18z"/>
+    <path d="M192 400h20v20h-20zM226 400h20v20h-20zM260 400h20v20h-20z"/>
+    <path d="M600 176h24v22h-24zM640 176h24v22h-24zM680 176h24v22h-24z"/>
+    <path d="M634 408h24v22h-24zM674 408h24v22h-24z"/>
+  </g>
+
+  <g fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round">
+    <path d="M94 508C184 420 326 430 410 346s118-142 232-156 162 94 170 182-64 156-180 174"/>
+    <path d="M224 534C288 454 418 428 492 334s198-102 284-48"/>
+    <path d="M90 254C214 290 312 262 410 292s144 36 236 18 132-40 214 4"/>
+  </g>
+  <g fill="none" stroke="#cedbd3" stroke-width="2">
+    <path d="M94 508C184 420 326 430 410 346s118-142 232-156 162 94 170 182-64 156-180 174"/>
+    <path d="M224 534C288 454 418 428 492 334s198-102 284-48"/>
+    <path d="M90 254C214 290 312 262 410 292s144 36 236 18 132-40 214 4"/>
+  </g>
+
+  <path d="M108 486C210 408 320 438 404 350s142-140 248-150 146 78 164 154"
+        fill="none" stroke="#1faf72" stroke-width="5" stroke-linecap="round" stroke-dasharray="13 13"/>
+  <path d="M108 486C210 408 320 438 404 350s142-140 248-150 146 78 164 154"
+        fill="none" stroke="#1faf72" stroke-opacity=".12" stroke-width="16" stroke-linecap="round"/>
+
+  <g>
+    <circle cx="108" cy="486" r="13" fill="#b5442e"/>
+    <circle cx="108" cy="486" r="5" fill="#f6f3ec"/>
+    <circle cx="404" cy="350" r="13" fill="#b5442e"/>
+    <circle cx="404" cy="350" r="5" fill="#f6f3ec"/>
+    <circle cx="652" cy="200" r="13" fill="#b5442e"/>
+    <circle cx="652" cy="200" r="5" fill="#f6f3ec"/>
+    <circle cx="816" cy="354" r="13" fill="#b5442e"/>
+    <circle cx="816" cy="354" r="5" fill="#f6f3ec"/>
+  </g>
+
+  <g fill="#3f6656" opacity=".82">
+    <circle cx="113" cy="292" r="26"/>
+    <circle cx="144" cy="300" r="19"/>
+    <circle cx="514" cy="174" r="24"/>
+    <circle cx="548" cy="183" r="17"/>
+    <circle cx="534" cy="470" r="29"/>
+    <circle cx="568" cy="477" r="21"/>
+    <circle cx="732" cy="490" r="25"/>
+    <circle cx="760" cy="497" r="18"/>
+  </g>
+  <g fill="#060f1c" opacity=".6">
+    <path d="M113 292v72" stroke="#060f1c" stroke-width="3"/>
+    <path d="M514 174v66" stroke="#060f1c" stroke-width="3"/>
+    <path d="M534 470v58" stroke="#060f1c" stroke-width="3"/>
+    <path d="M732 490v48" stroke="#060f1c" stroke-width="3"/>
+  </g>
+
+  <g transform="translate(674 306)">
+    <circle cx="0" cy="28" r="17" fill="none" stroke="#3f6656" stroke-width="2.6"/>
+    <circle cx="56" cy="28" r="17" fill="none" stroke="#3f6656" stroke-width="2.6"/>
+    <path d="M0 28 16 4h22l14 24H0l10-24h25" fill="none" stroke="#3f6656" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="26" cy="0" r="5" fill="#b5442e"/>
+    <path d="M22 4c4-5 11-4 14 1l5 13H19z" fill="#b5442e"/>
+  </g>
+
+  <g fill="#b5442e" opacity=".8">
+    <path d="M710 86c-16-16-4-38 16-32 5-18 33-18 38 2 22-4 30 22 12 34-10 7-56 5-66-4z"/>
+    <path d="M88 118c-12-12-3-28 12-24 3-13 24-14 28 1 16-2 21 16 9 24-8 5-41 4-49-1z"/>
+  </g>
+  <g fill="#3f6656" opacity=".24">
+    <path d="M768 110c18-28 46-31 72-18-22 2-46 12-72 18z"/>
+    <path d="M144 145c12-20 34-25 54-16-18 2-36 8-54 16z"/>
+  </g>
+
+  <g font-family="Georgia, serif" fill="#3f6656" opacity=".38" font-size="13" letter-spacing="4">
+    <text x="176" y="154">TEACHING</text>
+    <text x="600" y="124">LIBRARY</text>
+    <text x="174" y="486">DORMITORY</text>
+    <text x="626" y="504">SPORTS</text>
+  </g>
+</svg>

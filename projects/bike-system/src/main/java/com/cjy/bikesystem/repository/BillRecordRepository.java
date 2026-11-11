@@ -14,6 +14,8 @@ public interface BillRecordRepository extends JpaRepository<BillRecord, String> 
     // 根据用户查询账单
     List<BillRecord> findByUser(User user);
 
+    List<BillRecord> findByRideOrder_OrderId(String orderId);
+
     // 根据支付方式查询
     List<BillRecord> findByPayMethod(String payMethod);
 

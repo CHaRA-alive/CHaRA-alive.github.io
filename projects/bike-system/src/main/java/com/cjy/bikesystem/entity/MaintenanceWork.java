@@ -1,6 +1,7 @@
 package com.cjy.bikesystem.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -40,4 +41,9 @@ public class MaintenanceWork {
 
     @Column(name = "WorkType", length = 10)
     private String workType;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getBikeId() {
+        return bike == null ? null : bike.getBikeId();
+    }
 }
