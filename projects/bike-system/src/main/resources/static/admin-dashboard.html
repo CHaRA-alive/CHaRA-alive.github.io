@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 自行车管理系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        /* 侧边栏 */
+        .admin-sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            background: #34495e;
+            color: white;
+        }
+
+        .menu-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .menu-item i {
+            width: 24px;
+        }
+
+        /* 主内容 */
+        .admin-content {
+            margin-left: 220px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* 搜索栏 */
+        .search-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            padding: 8px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #2980b9;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* 数据表格 */
+        .data-table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-action-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .table-action-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-success { background: #d4edda; color: #155724; }
+        .status-warning { background: #fff3cd; color: #856404; }
+        .status-danger { background: #f8d7da; color: #721c24; }
+        .status-info { background: #d1ecf1; color: #0c5460; }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .admin-wrapper {
+                flex-direction: column;
+            }
+
+            .admin-sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+            }
+
+            .admin-content {
+                margin-left: 0;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            .search-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <!-- 侧边栏 -->
+    <div class="admin-sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="fas fa-bicycle"></i> 管理后台</h4>
+            <small id="admin-name">系统管理员</small>
+        </div>
+
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>仪表盘</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('users')">
+                <i class="fas fa-users"></i>
+                <span>用户管理</span>
+                <span id="user-count-badge" class="badge bg-danger ms-2">0</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('bikes')">
+                <i class="fas fa-bicycle"></i>
+                <span>车辆管理</span>
+                <span id="bike-count-badge" class="badge bg-danger ms-2">0</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('orders')">
+                <i class="fas fa-receipt"></i>
+                <span>订单管理</span>
+                <span id="order-count-badge" class="badge bg-danger ms-2">0</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showSection('security')">
+                <i class="fas fa-shield-alt"></i>
+                <span>安全记录</span>
+                <span id="security-count-badge" class="badge bg-danger ms-2">0</span>
+            </a>
+            <a href="index.html" class="menu-item" style="margin-top: 20px;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出登录</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="admin-content">
+        <h2>系统管理后台</h2>
+        <p class="text-muted">数据查询与管理中心</p>
+
+        <!-- 统计概览 -->
+        <div class="stats-grid" id="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-users">--</div>
+                <div class="stat-label">用户总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-bikes">--</div>
+                <div class="stat-label">车辆总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-orders">--</div>
+                <div class="stat-label">订单总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="today-revenue">--</div>
+                <div class="stat-label">今日收入</div>
+            </div>
+        </div>
+
+        <!-- 用户管理 -->
+        <div id="users-section" class="section">
+            <div class="search-container">
+                <h5>用户查询</h5>
+                <div class="search-row">
+                    <div class="search-group">
+                        <label>用户ID</label>
+                        <input type="text" id="search-user-id" class="search-input" placeholder="输入用户ID">
+                    </div>
+                    <div class="search-group">
+                        <label>用户姓名</label>
+                        <input type="text" id="search-user-name" class="search-input" placeholder="输入姓名">
+                    </div>
+                    <div class="search-group">
+                        <label>手机号</label>
+                        <input type="text" id="search-user-phone" class="search-input" placeholder="输入手机号">
+                    </div>
+                    <div class="search-group">
+                        <label>信用状态</label>
+                        <select id="search-user-credit" class="search-input">
+                            <option value="">全部</option>
+                            <option value="标记">标记</option>
+                            <option value="未标记">未标记</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button class="search-btn" onclick="searchUsers()">
+                        <i class="fas fa-search"></i> 查询
+                    </button>
+                    <button class="search-btn" style="background: #2ecc71;" onclick="resetUserSearch()">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                    <button class="search-btn" style="background: #e74c3c;" onclick="exportUsers()">
+                        <i class="fas fa-download"></i> 导出
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">用户列表</div>
+                    <div class="table-actions">
+                        <button class="table-action-btn" onclick="refreshUsers()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="table-action-btn" onclick="addUser()">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+
+                <div id="users-table-container">
+                    <div style="padding: 40px; text-align: center; color: #7f8c8d;">
+                        <i class="fas fa-spinner fa-spin"></i> 正在加载用户数据...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 车辆管理 -->
+        <div id="bikes-section" class="section" style="display: none;">
+            <div class="search-container">
+                <h5>车辆查询</h5>
+                <div class="search-row">
+                    <div class="search-group">
+                        <label>车辆ID</label>
+                        <input type="text" id="search-bike-id" class="search-input" placeholder="输入车辆ID">
+                    </div>
+                    <div class="search-group">
+                        <label>车辆状态</label>
+                        <select id="search-bike-status" class="search-input">
+                            <option value="">全部状态</option>
+                            <option value="可用">可用</option>
+                            <option value="使用中">使用中</option>
+                            <option value="故障">故障</option>
+                            <option value="调度中">调度中</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <label>健康状态</label>
+                        <select id="search-bike-health" class="search-input">
+                            <option value="">全部</option>
+                            <option value="正常">正常</option>
+                            <option value="脏污">脏污</option>
+                            <option value="损坏">损坏</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <label>位置范围</label>
+                        <input type="text" id="search-bike-location" class="search-input" placeholder="位置关键词">
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button class="search-btn" onclick="searchBikes()">
+                        <i class="fas fa-search"></i> 查询
+                    </button>
+                    <button class="search-btn" style="background: #2ecc71;" onclick="resetBikeSearch()">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                    <button class="search-btn" onclick="showAvailableBikes()">
+                        <i class="fas fa-bicycle"></i> 可用车辆
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">车辆列表</div>
+                    <div class="table-actions">
+                        <button class="table-action-btn" onclick="refreshBikes()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="table-action-btn" onclick="addBike()">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+
+                <div id="bikes-table-container">
+                    <div style="padding: 40px; text-align: center; color: #7f8c8d;">
+                        <i class="fas fa-spinner fa-spin"></i> 点击查询按钮加载数据
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 订单管理 -->
+        <div id="orders-section" class="section" style="display: none;">
+            <div class="search-container">
+                <h5>订单查询</h5>
+                <div class="search-row">
+                    <div class="search-group">
+                        <label>订单ID</label>
+                        <input type="text" id="search-order-id" class="search-input" placeholder="输入订单ID">
+                    </div>
+                    <div class="search-group">
+                        <label>用户ID</label>
+                        <input type="text" id="search-order-user" class="search-input" placeholder="输入用户ID">
+                    </div>
+                    <div class="search-group">
+                        <label>车辆ID</label>
+                        <input type="text" id="search-order-bike" class="search-input" placeholder="输入车辆ID">
+                    </div>
+                    <div class="search-group">
+                        <label>支付状态</label>
+                        <select id="search-order-pay" class="search-input">
+                            <option value="">全部</option>
+                            <option value="已支付">已支付</option>
+                            <option value="未支付">未支付</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-row">
+                    <div class="search-group">
+                        <label>开始时间</label>
+                        <input type="datetime-local" id="search-order-start" class="search-input">
+                    </div>
+                    <div class="search-group">
+                        <label>结束时间</label>
+                        <input type="datetime-local" id="search-order-end" class="search-input">
+                    </div>
+                    <div class="search-group">
+                        <label>停车状态</label>
+                        <select id="search-order-park" class="search-input">
+                            <option value="">全部</option>
+                            <option value="合规">合规</option>
+                            <option value="违规">违规</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button class="search-btn" onclick="searchOrders()">
+                        <i class="fas fa-search"></i> 查询
+                    </button>
+                    <button class="search-btn" style="background: #2ecc71;" onclick="resetOrderSearch()">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                    <button class="search-btn" style="background: #9b59b6;" onclick="exportOrders()">
+                        <i class="fas fa-file-export"></i> 导出报表
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">订单列表</div>
+                    <div class="table-actions">
+                        <button class="table-action-btn" onclick="refreshOrders()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="table-action-btn" onclick="showUnpaidOrders()">
+                            <i class="fas fa-money-bill-wave"></i> 未支付订单
+                        </button>
+                    </div>
+                </div>
+
+                <div id="orders-table-container">
+                    <div style="padding: 40px; text-align: center; color: #7f8c8d;">
+                        <i class="fas fa-spinner fa-spin"></i> 点击查询按钮加载数据
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 安全记录 -->
+        <div id="security-section" class="section" style="display: none;">
+            <div class="search-container">
+                <h5>安全记录查询</h5>
+                <div class="search-row">
+                    <div class="search-group">
+                        <label>记录ID</label>
+                        <input type="text" id="search-security-id" class="search-input" placeholder="输入记录ID">
+                    </div>
+                    <div class="search-group">
+                        <label>车辆ID</label>
+                        <input type="text" id="search-security-bike" class="search-input" placeholder="输入车辆ID">
+                    </div>
+                    <div class="search-group">
+                        <label>上报人</label>
+                        <input type="text" id="search-security-reporter" class="search-input" placeholder="输入上报人ID">
+                    </div>
+                    <div class="search-group">
+                        <label>处理状态</label>
+                        <select id="search-security-status" class="search-input">
+                            <option value="">全部</option>
+                            <option value="未处理">未处理</option>
+                            <option value="已处理">已处理</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button class="search-btn" onclick="searchSecurityRecords()">
+                        <i class="fas fa-search"></i> 查询
+                    </button>
+                    <button class="search-btn" style="background: #2ecc71;" onclick="resetSecuritySearch()">
+                        <i class="fas fa-redo"></i> 重置
+                    </button>
+                    <button class="search-btn" style="background: #e74c3c;" onclick="showUnhandledViolations()">
+                        <i class="fas fa-exclamation-triangle"></i> 未处理违规
+                    </button>
+                </div>
+            </div>
+
+            <div class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">安全记录列表</div>
+                    <div class="table-actions">
+                        <button class="table-action-btn" onclick="refreshSecurityRecords()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="table-action-btn" onclick="addViolation()">
+                            <i class="fas fa-plus-circle"></i> 添加记录
+                        </button>
+                    </div>
+                </div>
+
+                <div id="security-table-container">
+                    <div style="padding: 40px; text-align: center; color: #7f8c8d;">
+                        <i class="fas fa-spinner fa-spin"></i> 点击查询按钮加载数据
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 用户详情模态框 -->
+<div id="user-detail-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>用户详情</h5>
+            <button class="modal-close" onclick="closeModal('user-detail-modal')">&times;</button>
+        </div>
+        <div id="user-detail-content">
+            <!-- 内容由JS动态生成 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http://localhost:8080/api';
+    let currentSection = 'users';
+    let currentData = {
+        users: [],
+        bikes: [],
+        orders: [],
+        security: []
+    };
+
+    // 页面加载
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('管理后台加载完成');
+
+        // 检查登录状态
+        const adminInfo = localStorage.getItem('adminInfo');
+        if (adminInfo) {
+            const admin = JSON.parse(adminInfo);
+            document.getElementById('admin-name').textContent = admin.adminName || '管理员';
+        }
+
+        // 加载统计数据
+        loadDashboardStats();
+
+        // 默认加载用户数据
+        loadUsers();
+
+        // 初始化时间选择器
+        initDateTimePickers();
+    });
+
+    // 加载仪表盘统计数据
+    async function loadDashboardStats() {
+        try {
+            const [users, bikes, orders] = await Promise.all([
+                fetchData('/users'),
+                fetchData('/bikes'),
+                fetchData('/orders')
+            ]);
+
+            document.getElementById('total-users').textContent = users.length || 0;
+            document.getElementById('total-bikes').textContent = bikes.length || 0;
+            document.getElementById('total-orders').textContent = orders.length || 0;
+
+            // 计算今日收入
+            const today = new Date().toISOString().split('T')[0];
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.startTime || order.endTime).toISOString().split('T')[0];
+                return orderDate === today && order.payStatus === '已支付';
+            });
+
+            const todayRevenue = todayOrders.reduce((sum, order) => sum + (order.fee || 0), 0);
+            document.getElementById('today-revenue').textContent = `¥${todayRevenue.toFixed(2)}`;
+
+            // 更新侧边栏计数
+            updateSidebarCounts(users, bikes, orders);
+
+        } catch (error) {
+            console.error('加载统计数据失败:', error);
+        }
+    }
+
+    // 更新侧边栏计数
+    function updateSidebarCounts(users, bikes, orders) {
+        document.getElementById('user-count-badge').textContent = users.length || 0;
+        document.getElementById('bike-count-badge').textContent = bikes.length || 0;
+        document.getElementById('order-count-badge').textContent = orders.length || 0;
+    }
+
+    // 通用数据获取
+    async function fetchData(endpoint, params = {}) {
+        let url = `${API_BASE}${endpoint}`;
+
+        // 添加查询参数
+        const queryParams = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            if (params[key]) queryParams.append(key, params[key]);
+        });
+
+        if (queryParams.toString()) {
+            url += '?' + queryParams.toString();
+        }
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error(`获取数据失败: ${url}`, error);
+            throw error;
+        }
+    }
+
+    // 显示不同部分
+    function showSection(section) {
+        // 隐藏所有部分
+        document.querySelectorAll('.section').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        // 更新菜单项激活状态
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // 显示选中部分
+        document.getElementById(`${section}-section`).style.display = 'block';
+
+        // 激活对应菜单项
+        const menuItem = Array.from(document.querySelectorAll('.menu-item')).find(item =>
+            item.textContent.includes(getSectionName(section))
+        );
+        if (menuItem) menuItem.classList.add('active');
+
+        currentSection = section;
+
+        // 加载对应数据
+        switch(section) {
+            case 'users':
+                loadUsers();
+                break;
+            case 'bikes':
+                loadBikes();
+                break;
+            case 'orders':
+                loadOrders();
+                break;
+            case 'security':
+                loadSecurityRecords();
+                break;
+        }
+    }
+
+    function getSectionName(section) {
+        const names = {
+            'users': '用户管理',
+            'bikes': '车辆管理',
+            'orders': '订单管理',
+            'security': '安全记录'
+        };
+        return names[section] || section;
+    }
+
+    // 用户管理功能
+    async function loadUsers() {
+        const container = document.getElementById('users-table-container');
+        container.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+
+        try {
+            const users = await fetchData('/users');
+            currentData.users = users;
+            renderUsersTable(users);
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">加载失败: ${error.message}</div>`;
+        }
+    }
+
+    function searchUsers() {
+        const userId = document.getElementById('search-user-id').value;
+        const userName = document.getElementById('search-user-name').value;
+        const userPhone = document.getElementById('search-user-phone').value;
+        const userCredit = document.getElementById('search-user-credit').value;
+
+        let filtered = currentData.users;
+
+        if (userId) {
+            filtered = filtered.filter(user => user.userId.includes(userId));
+        }
+
+        if (userName) {
+            filtered = filtered.filter(user => user.userName && user.userName.includes(userName));
+        }
+
+        if (userPhone) {
+            filtered = filtered.filter(user => user.phone && user.phone.includes(userPhone));
+        }
+
+        if (userCredit) {
+            filtered = filtered.filter(user => user.credit === userCredit);
+        }
+
+        renderUsersTable(filtered);
+    }
+
+    function renderUsersTable(users) {
+        const container = document.getElementById('users-table-container');
+
+        if (!users || users.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">未找到符合条件的用户</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>用户ID</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>年龄</th>
+                            <th>性别</th>
+                            <th>状态</th>
+                            <th>信用</th>
+                            <th>余额</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        users.forEach(user => {
+            const statusClass = user.status === '正常' ? 'status-success' : 'status-danger';
+            const creditClass = user.credit === '标记' ? 'status-danger' : 'status-success';
+
+            html += `
+                <tr>
+                    <td>${user.userId || '未知'}</td>
+                    <td>${user.userName || '未知'}</td>
+                    <td>${user.phone || '未知'}</td>
+                    <td>${user.age || '未知'}</td>
+                    <td>${user.gender || '未知'}</td>
+                    <td><span class="status-badge ${statusClass}">${user.status || '未知'}</span></td>
+                    <td><span class="status-badge ${creditClass}">${user.credit || '未知'}</span></td>
+                    <td>¥${user.balance || 0}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewUserDetail('${user.userId}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editUser('${user.userId}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.userId}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span>共 ${users.length} 条记录</span>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function viewUserDetail(userId) {
+        const user = currentData.users.find(u => u.userId === userId);
+        if (!user) {
+            alert('用户不存在');
+            return;
+        }
+
+        const content = document.getElementById('user-detail-content');
+        content.innerHTML = `
+            <div class="user-detail">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>用户ID:</label>
+                        <p><strong>${user.userId}</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>姓名:</label>
+                        <p><strong>${user.userName}</strong></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>手机号:</label>
+                        <p>${user.phone || '未知'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>年龄:</label>
+                        <p>${user.age || '未知'}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>性别:</label>
+                        <p>${user.gender || '未知'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>状态:</label>
+                        <p><span class="status-badge ${user.status === '正常' ? 'status-success' : 'status-danger'}">${user.status}</span></p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>信用标记:</label>
+                        <p><span class="status-badge ${user.credit === '标记' ? 'status-danger' : 'status-success'}">${user.credit}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label>账户余额:</label>
+                        <p><strong>¥${user.balance || 0}</strong></p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button class="search-btn" onclick="rechargeBalance('${user.userId}')">
+                        <i class="fas fa-money-bill"></i> 充值
+                    </button>
+                    <button class="search-btn" style="background: ${user.credit === '标记' ? '#2ecc71' : '#e74c3c'};"
+                            onclick="toggleUserCredit('${user.userId}')">
+                        <i class="fas fa-flag"></i> ${user.credit === '标记' ? '取消标记' : '标记信用'}
+                    </button>
+                </div>
+            </div>
+        `;
+
+        openModal('user-detail-modal');
+    }
+
+    function resetUserSearch() {
+        document.getElementById('search-user-id').value = '';
+        document.getElementById('search-user-name').value = '';
+        document.getElementById('search-user-phone').value = '';
+        document.getElementById('search-user-credit').value = '';
+        renderUsersTable(currentData.users);
+    }
+
+    // 车辆管理功能
+    async function loadBikes() {
+        const container = document.getElementById('bikes-table-container');
+        container.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+
+        try {
+            const bikes = await fetchData('/bikes');
+            currentData.bikes = bikes;
+            renderBikesTable(bikes);
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">加载失败: ${error.message}</div>`;
+        }
+    }
+
+    function searchBikes() {
+        const bikeId = document.getElementById('search-bike-id').value;
+        const bikeStatus = document.getElementById('search-bike-status').value;
+        const bikeHealth = document.getElementById('search-bike-health').value;
+        const bikeLocation = document.getElementById('search-bike-location').value;
+
+        let filtered = currentData.bikes;
+
+        if (bikeId) {
+            filtered = filtered.filter(bike => bike.bikeId.includes(bikeId));
+        }
+
+        if (bikeStatus) {
+            filtered = filtered.filter(bike => bike.bikeStatus === bikeStatus);
+        }
+
+        if (bikeHealth) {
+            filtered = filtered.filter(bike => bike.healthStatus === bikeHealth);
+        }
+
+        if (bikeLocation) {
+            filtered = filtered.filter(bike =>
+                (bike.location && bike.location.toString().includes(bikeLocation)) ||
+                (bike.position && bike.position.includes(bikeLocation))
+            );
+        }
+
+        renderBikesTable(filtered);
+    }
+
+    async function showAvailableBikes() {
+        try {
+            const availableBikes = await fetchData('/bikes/available');
+            currentData.bikes = availableBikes;
+            renderBikesTable(availableBikes);
+
+            // 更新筛选条件
+            document.getElementById('search-bike-status').value = '可用';
+        } catch (error) {
+            alert('获取可用车辆失败: ' + error.message);
+        }
+    }
+
+    function renderBikesTable(bikes) {
+        const container = document.getElementById('bikes-table-container');
+
+        if (!bikes || bikes.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">未找到符合条件的车辆</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>车辆ID</th>
+                            <th>二维码</th>
+                            <th>状态</th>
+                            <th>健康状态</th>
+                            <th>位置</th>
+                            <th>最后更新</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        bikes.forEach(bike => {
+            const statusClass = getBikeStatusClass(bike.bikeStatus);
+            const healthClass = getHealthStatusClass(bike.healthStatus);
+
+            html += `
+                <tr>
+                    <td>${bike.bikeId}</td>
+                    <td><small>${bike.qrCode || 'N/A'}</small></td>
+                    <td><span class="status-badge ${statusClass}">${bike.bikeStatus}</span></td>
+                    <td><span class="status-badge ${healthClass}">${bike.healthStatus || '未知'}</span></td>
+                    <td>${bike.location || '未知'}</td>
+                    <td>${formatDate(bike.updatedAt) || '未知'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewBike('${bike.bikeId}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editBike('${bike.bikeId}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="maintainBike('${bike.bikeId}')">
+                            <i class="fas fa-wrench"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function getBikeStatusClass(status) {
+        switch(status) {
+            case '可用': return 'status-success';
+            case '使用中': return 'status-info';
+            case '故障': return 'status-danger';
+            case '调度中': return 'status-warning';
+            default: return '';
+        }
+    }
+
+    function getHealthStatusClass(status) {
+        switch(status) {
+            case '正常': return 'status-success';
+            case '脏污': return 'status-warning';
+            case '损坏': return 'status-danger';
+            default: return '';
+        }
+    }
+
+    function resetBikeSearch() {
+        document.getElementById('search-bike-id').value = '';
+        document.getElementById('search-bike-status').value = '';
+        document.getElementById('search-bike-health').value = '';
+        document.getElementById('search-bike-location').value = '';
+        renderBikesTable(currentData.bikes);
+    }
+
+    // 订单管理功能
+    async function loadOrders() {
+        const container = document.getElementById('orders-table-container');
+        container.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+
+        try {
+            const orders = await fetchData('/orders');
+            currentData.orders = orders;
+            renderOrdersTable(orders);
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">加载失败: ${error.message}</div>`;
+        }
+    }
+
+    function searchOrders() {
+        const orderId = document.getElementById('search-order-id').value;
+        const userId = document.getElementById('search-order-user').value;
+        const bikeId = document.getElementById('search-order-bike').value;
+        const payStatus = document.getElementById('search-order-pay').value;
+        const parkStatus = document.getElementById('search-order-park').value;
+        const startTime = document.getElementById('search-order-start').value;
+        const endTime = document.getElementById('search-order-end').value;
+
+        let filtered = currentData.orders;
+
+        if (orderId) {
+            filtered = filtered.filter(order => order.orderId.includes(orderId));
+        }
+
+        if (userId) {
+            filtered = filtered.filter(order => order.userId === userId);
+        }
+
+        if (bikeId) {
+            filtered = filtered.filter(order => order.bikeId === bikeId);
+        }
+
+        if (payStatus) {
+            filtered = filtered.filter(order => order.payStatus === payStatus);
+        }
+
+        if (parkStatus) {
+            filtered = filtered.filter(order => order.parkStatus === parkStatus);
+        }
+
+        if (startTime) {
+            const startDate = new Date(startTime);
+            filtered = filtered.filter(order => new Date(order.startTime) >= startDate);
+        }
+
+        if (endTime) {
+            const endDate = new Date(endTime);
+            filtered = filtered.filter(order => new Date(order.endTime) <= endDate);
+        }
+
+        renderOrdersTable(filtered);
+    }
+
+    async function showUnpaidOrders() {
+        try {
+            const unpaidOrders = await fetchData('/orders/pay-status/未支付');
+            currentData.orders = unpaidOrders;
+            renderOrdersTable(unpaidOrders);
+
+            // 更新筛选条件
+            document.getElementById('search-order-pay').value = '未支付';
+        } catch (error) {
+            alert('获取未支付订单失败: ' + error.message);
+        }
+    }
+
+    function renderOrdersTable(orders) {
+        const container = document.getElementById('orders-table-container');
+
+        if (!orders || orders.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">未找到符合条件的订单</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>订单ID</th>
+                            <th>用户ID</th>
+                            <th>车辆ID</th>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>费用</th>
+                            <th>支付状态</th>
+                            <th>停车状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        orders.forEach(order => {
+            const payClass = order.payStatus === '已支付' ? 'status-success' : 'status-danger';
+            const parkClass = order.parkStatus === '合规' ? 'status-success' : 'status-danger';
+
+            html += `
+                <tr>
+                    <td>${order.orderId}</td>
+                    <td>${order.userId}</td>
+                    <td>${order.bikeId}</td>
+                    <td>${formatDateTime(order.startTime)}</td>
+                    <td>${formatDateTime(order.endTime)}</td>
+                    <td>¥${order.fee || 0}</td>
+                    <td><span class="status-badge ${payClass}">${order.payStatus}</span></td>
+                    <td><span class="status-badge ${parkClass}">${order.parkStatus || '未知'}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewOrder('${order.orderId}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${order.payStatus === '未支付' ? `
+                            <button class="btn btn-sm btn-outline-success" onclick="markOrderPaid('${order.orderId}')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function resetOrderSearch() {
+        document.getElementById('search-order-id').value = '';
+        document.getElementById('search-order-user').value = '';
+        document.getElementById('search-order-bike').value = '';
+        document.getElementById('search-order-pay').value = '';
+        document.getElementById('search-order-park').value = '';
+        document.getElementById('search-order-start').value = '';
+        document.getElementById('search-order-end').value = '';
+        renderOrdersTable(currentData.orders);
+    }
+
+    // 安全记录功能
+    async function loadSecurityRecords() {
+        const container = document.getElementById('security-table-container');
+        container.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+
+        try {
+            const records = await fetchData('/security-records');
+            currentData.security = records;
+            renderSecurityTable(records);
+        } catch (error) {
+            container.innerHTML = `<div class="alert alert-danger">加载失败: ${error.message}</div>`;
+        }
+    }
+
+    function searchSecurityRecords() {
+        const recordId = document.getElementById('search-security-id').value;
+        const bikeId = document.getElementById('search-security-bike').value;
+        const reporterId = document.getElementById('search-security-reporter').value;
+        const status = document.getElementById('search-security-status').value;
+
+        let filtered = currentData.security;
+
+        if (recordId) {
+            filtered = filtered.filter(record => record.reportId.includes(recordId));
+        }
+
+        if (bikeId) {
+            filtered = filtered.filter(record => record.violationBikeId === bikeId);
+        }
+
+        if (reporterId) {
+            filtered = filtered.filter(record => record.reporterId === reporterId);
+        }
+
+        if (status) {
+            filtered = filtered.filter(record => record.handleStatus === status);
+        }
+
+        renderSecurityTable(filtered);
+    }
+
+    async function showUnhandledViolations() {
+        try {
+            const unhandled = await fetchData('/security-records/unhandled');
+            currentData.security = unhandled;
+            renderSecurityTable(unhandled);
+
+            // 更新筛选条件
+            document.getElementById('search-security-status').value = '未处理';
+        } catch (error) {
+            alert('获取未处理违规失败: ' + error.message);
+        }
+    }
+
+    function renderSecurityTable(records) {
+        const container = document.getElementById('security-table-container');
+
+        if (!records || records.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">未找到符合条件的记录</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>记录ID</th>
+                            <th>车辆ID</th>
+                            <th>上报人</th>
+                            <th>违规位置</th>
+                            <th>上报时间</th>
+                            <th>处理状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        records.forEach(record => {
+            const statusClass = record.handleStatus === '已处理' ? 'status-success' : 'status-danger';
+
+            html += `
+                <tr>
+                    <td>${record.reportId}</td>
+                    <td>${record.violationBikeId}</td>
+                    <td>${record.reporterId}</td>
+                    <td>${record.violationPosition || '未知'}</td>
+                    <td>${formatDateTime(record.reportTime)}</td>
+                    <td><span class="status-badge ${statusClass}">${record.handleStatus}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewSecurityRecord('${record.reportId}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${record.handleStatus === '未处理' ? `
+                            <button class="btn btn-sm btn-outline-success" onclick="handleViolation('${record.reportId}')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function resetSecuritySearch() {
+        document.getElementById('search-security-id').value = '';
+        document.getElementById('search-security-bike').value = '';
+        document.getElementById('search-security-reporter').value = '';
+        document.getElementById('search-security-status').value = '';
+        renderSecurityTable(currentData.security);
+    }
+
+    // 工具函数
+    function formatDateTime(dateTime) {
+        if (!dateTime) return '未知';
+        const date = new Date(dateTime);
+        return date.toLocaleString('zh-CN');
+    }
+
+    function formatDate(date) {
+        if (!date) return '未知';
+        return new Date(date).toLocaleDateString('zh-CN');
+    }
+
+    function initDateTimePickers() {
+        // 设置默认时间为今天
+        const today = new Date().toISOString().slice(0, 16);
+        document.getElementById('search-order-start').value = today;
+        document.getElementById('search-order-end').value = today;
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // 刷新函数
+    function refreshUsers() {
+        loadUsers();
+    }
+
+    function refreshBikes() {
+        loadBikes();
+    }
+
+    function refreshOrders() {
+        loadOrders();
+    }
+
+    function refreshSecurityRecords() {
+        loadSecurityRecords();
+    }
+
+    // 占位函数（实际实现需要调用API）
+    function addUser() {
+        alert('添加用户功能开发中...');
+    }
+
+    function editUser(userId) {
+        alert('编辑用户: ' + userId);
+    }
+
+    function deleteUser(userId) {
+        if (confirm('确定要删除用户 ' + userId + ' 吗？')) {
+            alert('删除用户: ' + userId + ' (需要调用DELETE API)');
+        }
+    }
+
+    function rechargeBalance(userId) {
+        const amount = prompt('请输入充值金额:', '50');
+        if (amount && !isNaN(amount)) {
+            alert(`为用户 ${userId} 充值 ¥${amount} (需要调用API)`);
+        }
+    }
+
+    function toggleUserCredit(userId) {
+        alert('切换用户信用标记: ' + userId);
+    }
+
+    function addBike() {
+        alert('添加车辆功能开发中...');
+    }
+
+    function viewBike(bikeId) {
+        alert('查看车辆详情: ' + bikeId);
+    }
+
+    function editBike(bikeId) {
+        alert('编辑车辆: ' + bikeId);
+    }
+
+    function maintainBike(bikeId) {
+        alert('创建维修工单: ' + bikeId);
+    }
+
+    function viewOrder(orderId) {
+        alert('查看订单详情: ' + orderId);
+    }
+
+    function markOrderPaid(orderId) {
+        if (confirm('标记订单 ' + orderId + ' 为已支付？')) {
+            alert('标记支付: ' + orderId);
+        }
+    }
+
+    function exportOrders() {
+        alert('导出订单报表功能开发中...');
+    }
+
+    function viewSecurityRecord(recordId) {
+        alert('查看安全记录详情: ' + recordId);
+    }
+
+    function handleViolation(recordId) {
+        if (confirm('标记记录 ' + recordId + ' 为已处理？')) {
+            alert('处理违规记录: ' + recordId);
+        }
+    }
+
+    function addViolation() {
+        alert('添加违规记录功能开发中...');
+    }
+
+    function exportUsers() {
+        alert('导出用户数据功能开发中...');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共享单车 - 用户中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 状态卡片 */
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .status-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .status-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .status-note {
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* 快速操作 */
+        .quick-actions {
+            padding: 0 30px 30px;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .action-icon {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        /* 主要内容区 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 订单区域 */
+        .orders-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            text-align: left;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        .orders-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-paid { background: #d4edda; color: #155724; }
+        .status-unpaid { background: #f8d7da; color: #721c24; }
+
+        /* 侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+        }
+
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.success { background: #4CAF50; }
+        .notification.error { background: #F44336; }
+        .notification.info { background: #2196F3; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* 无数据提示 */
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <h1><span>🚲</span> 共享单车用户中心</h1>
+        <div class="user-info">
+            <div>
+                <div id="userName">加载中...</div>
+                <div style="font-size: 12px; opacity: 0.8;" id="userId"></div>
+            </div>
+            <button class="logout-btn" onclick="logout()">退出登录</button>
+        </div>
+    </div>
+
+    <!-- 状态卡片 -->
+    <div class="status-cards">
+        <div class="status-card">
+            <h3>账户余额</h3>
+            <div class="status-value" id="balance">¥0.00</div>
+            <div class="status-note">可用余额</div>
+        </div>
+
+        <div class="status-card">
+            <h3>信用状态</h3>
+            <div class="status-value" id="creditStatus">未标记</div>
+            <div class="status-note" id="accountStatus">账户正常</div>
+        </div>
+
+        <div class="status-card">
+            <h3>累计骑行</h3>
+            <div class="status-value" id="totalRides">0次</div>
+            <div class="status-note">历史总次数</div>
+        </div>
+
+        <div class="status-card">
+            <h3>待支付</h3>
+            <div class="status-value" id="unpaidCount">0单</div>
+            <div class="status-note">待支付订单</div>
+        </div>
+    </div>
+
+    <!-- 快速操作 -->
+    <div class="quick-actions">
+        <div class="section-title"><span>⚡</span> 快速操作</div>
+        <div class="action-grid">
+            <button class="action-btn" onclick="showScanModal()">
+                <div class="action-icon">📷</div>
+                <div>扫码用车</div>
+            </button>
+            <button class="action-btn" onclick="showRepairModal()">
+                <div class="action-icon">🔧</div>
+                <div>车辆报修</div>
+            </button>
+            <button class="action-btn" onclick="showNearbyBikes()">
+                <div class="action-icon">📍</div>
+                <div>附近车辆</div>
+            </button>
+            <button class="action-btn" onclick="refreshData()">
+                <div class="action-icon">🔄</div>
+                <div>刷新数据</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- 主要内容区 -->
+    <div class="main-content">
+        <!-- 左侧：订单 -->
+        <div class="orders-section">
+            <div class="section-header">
+                <div class="section-title"><span>📝</span> 我的订单</div>
+                <button onclick="loadOrders()" style="background: none; border: none; cursor: pointer; font-size: 18px;">
+                    🔄
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="搜索订单号、位置..." onkeyup="searchOrders()">
+            </div>
+
+            <div id="ordersContainer">
+                <table class="orders-table">
+                    <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>时间</th>
+                        <th>路线</th>
+                        <th>费用</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                    <!-- 动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 右侧：侧边栏 -->
+        <div class="sidebar">
+            <!-- 当前骑行 -->
+            <div class="sidebar-card" id="activeRideCard" style="display: none;">
+                <div class="section-title"><span>🚴</span> 当前骑行中</div>
+                <div id="activeRideInfo" style="margin-bottom: 15px; line-height: 1.6;">
+                    <!-- 动态内容 -->
+                </div>
+                <button class="submit-btn" onclick="endRide()">结束骑行</button>
+            </div>
+
+            <!-- 提示信息 -->
+            <div class="sidebar-card">
+                <div class="section-title"><span>💡</span> 系统提示</div>
+                <div id="tipsList" style="line-height: 1.8; color: #666;">
+                    <div>✅ 请规范停车，维护良好信用</div>
+                    <div>✅ 及时支付订单，避免影响使用</div>
+                    <div>✅ 发现故障车辆请及时报修</div>
+                </div>
+            </div>
+
+            <!-- 信用信息 -->
+            <div class="sidebar-card">
+                <div class="section-title"><span>⭐</span> 信用信息</div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>当前信用:</span>
+                        <strong id="currentCredit">未标记</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>违规记录:</span>
+                        <strong id="violationCount">0次</strong>
+                    </div>
+                </div>
+                <button class="submit-btn" onclick="showCreditInfo()" style="background: #9C27B0;">
+                    查看详情
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 扫码用车模态框 -->
+<div class="modal" id="scanModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><span>📷</span> 扫码用车</h2>
+            <button class="close-btn" onclick="closeModal('scanModal')">×</button>
+        </div>
+        <div class="form-group">
+            <label>车辆编号</label>
+            <input type="text" class="form-control" id="scanBikeId" placeholder="输入8位车辆编号，如：00000001">
+
+        </div>
+        <div class="form-group">
+            <label>起始位置</label>
+            <input type="text" class="form-control" id="scanStartPosition"
+                   placeholder="例如：宿舍区门口、教学楼A区">
+        </div>
+        <button class="submit-btn" onclick="startRide()">开始骑行</button>
+    </div>
+</div>
+
+<!-- 车辆报修模态框 -->
+<div class="modal" id="repairModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><span>🔧</span> 车辆报修</h2>
+            <button class="close-btn" onclick="closeModal('repairModal')">×</button>
+        </div>
+        <div class="form-group">
+            <label>车辆编号</label>
+            <input type="text" class="form-control" id="repairBikeId" placeholder="输入8位车辆编号">
+        </div>
+        <div class="form-group">
+            <label>问题类型</label>
+            <select class="form-control" id="repairType">
+                <option value="维修">车辆损坏</option>
+                <option value="清洁">车辆脏污</option>
+                <option value="调度">停放问题</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>问题描述</label>
+            <textarea class="form-control" id="repairDesc" rows="3" placeholder="请描述具体问题..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitRepair()">提交报修</button>
+    </div>
+</div>
+
+<!-- 附近车辆模态框 -->
+<div class="modal" id="bikesModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><span>📍</span> 附近可用车辆</h2>
+            <button class="close-btn" onclick="closeModal('bikesModal')">×</button>
+        </div>
+        <div id="bikesList">
+            <!-- 动态加载 -->
+        </div>
+    </div>
+</div>
+
+<!-- 信用信息模态框 -->
+<div class="modal" id="creditModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><span>⭐</span> 信用详情</h2>
+            <button class="close-btn" onclick="closeModal('creditModal')">×</button>
+        </div>
+        <div id="creditContent">
+            <!-- 动态加载 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // 全局变量
+    let currentUserId = null;
+    let currentUser = null;
+    let activeRide = null;
+    let allOrders = [];
+
+    // 页面加载
+    document.addEventListener('DOMContentLoaded', function() {
+        // 从URL或本地存储获取用户ID
+        const urlParams = new URLSearchParams(window.location.search);
+        currentUserId = urlParams.get('userId') || localStorage.getItem('userId') || '3124000001';
+
+        if (!currentUserId) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        localStorage.setItem('userId', currentUserId);
+
+        // 加载所有数据
+        loadUserInfo();
+        loadOrders();
+        checkActiveRide();
+        updateTips();
+    });
+
+    // 加载用户信息
+    async function loadUserInfo() {
+        try {
+            const response = await fetch(`/api/users/${currentUserId}`);
+            if (!response.ok) throw new Error('获取用户信息失败');
+
+            const user = await response.json();
+            currentUser = user;
+
+            // 更新页面显示
+            document.getElementById('userName').textContent = user.userName || '用户';
+            document.getElementById('userId').textContent = `ID: ${user.userId}`;
+            document.getElementById('balance').textContent = `¥${parseFloat(user.balance || 0).toFixed(2)}`;
+            document.getElementById('creditStatus').textContent = user.credit || '未标记';
+            document.getElementById('accountStatus').textContent = user.status === '冻结' ? '账户冻结' : '账户正常';
+            document.getElementById('currentCredit').textContent = user.credit || '未标记';
+
+            // 更新信用颜色
+            const creditElement = document.getElementById('creditStatus');
+            if (user.credit === '标记') {
+                creditElement.style.color = '#F44336';
+            } else {
+                creditElement.style.color = '#4CAF50';
+            }
+
+        } catch (error) {
+            console.error('加载用户信息失败:', error);
+            showNotification('加载用户信息失败', 'error');
+        }
+    }
+
+    // 加载订单数据
+    async function loadOrders() {
+        try {
+            const response = await fetch(`/api/orders/user/${currentUserId}`);
+            if (!response.ok) throw new Error('获取订单失败');
+
+            allOrders = await response.json();
+            renderOrders(allOrders);
+            updateStats(allOrders);
+
+        } catch (error) {
+            console.error('加载订单失败:', error);
+            // 显示示例数据
+            showExampleOrders();
+            showNotification('加载订单失败，显示示例数据', 'info');
+        }
+    }
+
+    // 渲染订单表格
+    function renderOrders(orders) {
+        const tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = '';
+
+        if (!orders || orders.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="no-data">
+                        <div class="no-data-icon">📭</div>
+                        <div>暂无订单记录</div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        // 按时间倒序排列
+        const sortedOrders = [...orders].sort((a, b) =>
+            new Date(b.startTime || 0) - new Date(a.startTime || 0)
+        ).slice(0, 10); // 只显示最近10条
+
+        sortedOrders.forEach(order => {
+            const row = document.createElement('tr');
+
+            // 格式化时间
+            const startTime = order.startTime ?
+                new Date(order.startTime).toLocaleString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '--';
+
+            // 格式化路线
+            let route = order.startPosition || '未知';
+            if (order.endPosition) {
+                route += ` → ${order.endPosition}`;
+            } else if (!order.endTime) {
+                route += ' (进行中)';
+            }
+
+            // 格式化费用
+            const fee = order.fee ? `¥${parseFloat(order.fee).toFixed(2)}` : '¥0.00';
+
+            row.innerHTML = `
+                <td style="font-family: monospace; font-size: 12px;">${order.orderId || '--'}</td>
+                <td style="white-space: nowrap;">${startTime}</td>
+                <td>${route}</td>
+                <td>${fee}</td>
+                <td>
+                    <span class="status-badge ${order.payStatus === '已支付' ? 'status-paid' : 'status-unpaid'}">
+                        ${order.payStatus || '未支付'}
+                    </span>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    // 更新统计数据
+    function updateStats(orders) {
+        if (!orders) return;
+
+        const totalRides = orders.length;
+        const unpaidOrders = orders.filter(o => o.payStatus === '未支付').length;
+        const violationCount = orders.filter(o => o.parkStatus === '违规').length;
+
+        document.getElementById('totalRides').textContent = `${totalRides}次`;
+        document.getElementById('unpaidCount').textContent = `${unpaidOrders}单`;
+        document.getElementById('violationCount').textContent = `${violationCount}次`;
+
+        // 更新提示
+        updateTips();
+    }
+
+    // 更新提示信息
+    function updateTips() {
+        const tipsList = document.getElementById('tipsList');
+        const unpaidCount = parseInt(document.getElementById('unpaidCount').textContent) || 0;
+        const creditStatus = document.getElementById('creditStatus').textContent;
+
+        let tips = [];
+
+        if (unpaidCount > 0) {
+            tips.push(`⚠️ 您有 ${unpaidCount} 个订单待支付`);
+        }
+
+        if (creditStatus === '标记') {
+            tips.push('⚠️ 您的信用已被标记，请规范停车');
+        }
+
+        if (currentUser && currentUser.balance < 5) {
+            tips.push('💰 账户余额较低，建议充值');
+        }
+
+        // 添加默认提示
+        if (tips.length < 3) {
+            tips.push('✅ 请规范停车，维护良好信用');
+            tips.push('✅ 及时支付订单，避免影响使用');
+            tips.push('✅ 发现故障车辆请及时报修');
+        }
+
+        tipsList.innerHTML = tips.map(tip => `<div>${tip}</div>`).join('');
+    }
+
+    // 检查进行中的骑行
+    async function checkActiveRide() {
+        try {
+            const response = await fetch(`/api/orders/user/${currentUserId}`);
+            const orders = await response.json();
+
+            if (orders && orders.length > 0) {
+                // 查找没有结束时间的订单
+                const activeOrder = orders.find(order => !order.endTime);
+
+                if (activeOrder) {
+                    activeRide = activeOrder;
+                    const card = document.getElementById('activeRideCard');
+                    const info = document.getElementById('activeRideInfo');
+
+                    card.style.display = 'block';
+                    info.innerHTML = `
+                        <div><strong>订单号:</strong> ${activeOrder.orderId}</div>
+                        <div><strong>车辆:</strong> ${activeOrder.bike?.bikeId || '--'}</div>
+                        <div><strong>开始时间:</strong> ${formatTime(activeOrder.startTime)}</div>
+                        <div><strong>位置:</strong> ${activeOrder.startPosition || '未知'}</div>
+                    `;
+                } else {
+                    document.getElementById('activeRideCard').style.display = 'none';
+                }
+            }
+        } catch (error) {
+            console.error('检查骑行状态失败:', error);
+        }
+    }
+
+    // 扫码用车
+    function showScanModal() {
+        document.getElementById('scanModal').style.display = 'flex';
+    }
+
+    async function startRide() {
+        const bikeId = document.getElementById('scanBikeId').value.trim();
+        const startPosition = document.getElementById('scanStartPosition').value.trim();
+
+        // 验证输入
+        if (!bikeId || !/^\d{8}$/.test(bikeId)) {
+            showNotification('请输入正确的8位车辆编号', 'error');
+            return;
+        }
+
+        if (!startPosition || startPosition.length < 2) {
+            showNotification('请输入有效的起始位置', 'error');
+            return;
+        }
+
+        try {
+            // 1. 检查车辆是否可用
+            const bikeResponse = await fetch(`/api/bikes/${bikeId}`);
+            if (!bikeResponse.ok) {
+                showNotification('车辆不存在', 'error');
+                return;
+            }
+
+            const bike = await bikeResponse.json();
+            if (bike.bikeStatus !== '可用') {
+                showNotification(`车辆当前状态: ${bike.bikeStatus}，无法使用`, 'error');
+                return;
+            }
+
+            // 2. 创建订单
+            const orderId = 'O' + Date.now();
+            const orderData = {
+                orderId: orderId,
+                userId: currentUserId,
+                bikeId: bikeId,
+                startPosition: startPosition,
+                startTime: new Date().toISOString(),
+                payStatus: '未支付',
+                parkStatus: '合规'
+            };
+
+            const orderResponse = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            if (!orderResponse.ok) {
+                throw new Error('创建订单失败');
+            }
+
+            const createdOrder = await orderResponse.json();
+
+            // 3. 更新车辆状态
+            await fetch(`/api/bikes/${bikeId}/status?status=使用中`, {
+                method: 'PUT'
+            });
+
+            // 4. 显示成功消息
+            showNotification(`骑行开始！订单号: ${orderId}`, 'success');
+            closeModal('scanModal');
+
+            // 5. 清空表单
+            document.getElementById('scanBikeId').value = '';
+            document.getElementById('scanStartPosition').value = '';
+
+            // 6. 刷新数据
+            setTimeout(() => {
+                loadUserInfo();
+                loadOrders();
+                checkActiveRide();
+            }, 1000);
+
+        } catch (error) {
+            console.error('开始骑行失败:', error);
+            showNotification('开始骑行失败: ' + error.message, 'error');
+        }
+    }
+
+    // 结束骑行
+    async function endRide() {
+        if (!activeRide || !activeRide.orderId) {
+            showNotification('没有进行中的骑行', 'error');
+            return;
+        }
+
+        const endPosition = prompt('请输入结束位置（例如：教学楼A区）:');
+        if (!endPosition || endPosition.length < 2) {
+            showNotification('请输入有效的结束位置', 'error');
+            return;
+        }
+
+        try {
+            // 结束订单
+            const response = await fetch(`/api/orders/${activeRide.orderId}/end?endPosition=${encodeURIComponent(endPosition)}&parkStatus=合规`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                const endedOrder = await response.json();
+
+                // 更新车辆状态
+                if (activeRide.bike?.bikeId) {
+                    await fetch(`/api/bikes/${activeRide.bike.bikeId}/status?status=可用`, {
+                        method: 'PUT'
+                    });
+                }
+
+                // 计算费用（简化版）
+                const fee = endedOrder.fee || 1.50;
+                showNotification(`骑行结束！费用: ¥${fee.toFixed(2)}`, 'success');
+
+                // 刷新数据
+                setTimeout(() => {
+                    loadUserInfo();
+                    loadOrders();
+                    checkActiveRide();
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('结束骑行失败:', error);
+            showNotification('结束骑行失败: ' + error.message, 'error');
+        }
+    }
+
+    // 车辆报修
+    function showRepairModal() {
+        document.getElementById('repairModal').style.display = 'flex';
+    }
+
+    async function submitRepair() {
+        const bikeId = document.getElementById('repairBikeId').value.trim();
+        const workType = document.getElementById('repairType').value;
+        const description = document.getElementById('repairDesc').value.trim();
+
+        if (!bikeId || !/^\d{8}$/.test(bikeId)) {
+            showNotification('请输入正确的8位车辆编号', 'error');
+            return;
+        }
+
+        if (!description) {
+            showNotification('请输入问题描述', 'error');
+            return;
+        }
+
+        try {
+            // 检查车辆是否存在
+            const bikeResponse = await fetch(`/api/bikes/${bikeId}`);
+            if (!bikeResponse.ok) {
+                showNotification('车辆不存在', 'error');
+                return;
+            }
+
+            // 创建维修工单
+            const workId = 'W' + Date.now();
+            const workData = {
+                workId: workId,
+                bikeId: bikeId,
+                reporterId: currentUserId,
+                desc: description,
+                workType: workType,
+                handleStatus: '待处理'
+            };
+
+            // 尝试调用 maintenance API
+            let response;
+            try {
+                response = await fetch('/api/maintenance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(workData)
+                });
+            } catch (e) {
+                // 如果 maintenance API 不存在，使用简化处理
+                response = { ok: true };
+            }
+
+            if (response.ok) {
+                showNotification(`报修成功！工单号: ${workId}`, 'success');
+                closeModal('repairModal');
+
+                // 清空表单
+                document.getElementById('repairBikeId').value = '';
+                document.getElementById('repairDesc').value = '';
+
+                // 更新车辆状态为故障
+                if (workType === '维修') {
+                    await fetch(`/api/bikes/${bikeId}/status?status=故障`, {
+                        method: 'PUT'
+                    });
+                }
+            }
+
+        } catch (error) {
+            console.error('提交报修失败:', error);
+            showNotification('提交报修失败: ' + error.message, 'error');
+        }
+    }
+
+    // 附近车辆
+    async function showNearbyBikes() {
+        document.getElementById('bikesModal').style.display = 'flex';
+
+        try {
+            const response = await fetch('/api/bikes/available');
+            const bikes = await response.json();
+
+            const container = document.getElementById('bikesList');
+
+            if (!bikes || bikes.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">😔</div>
+                        <div>附近暂无可用车辆</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <p style="color: #666; margin-bottom: 15px;">
+                    共找到 <strong>${bikes.length}</strong> 辆可用车辆
+                </p>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+
+            bikes.forEach(bike => {
+                html += `
+                    <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>车辆 ${bike.bikeId}</strong>
+                                <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    <span>状态: ${bike.healthStatus === '正常' ? '🟢 良好' : '🟡 需维护'}</span>
+                                    <span style="margin-left: 15px;">位置: ${bike.location || '未知'}</span>
+                                </div>
+                            </div>
+                            <button onclick="useThisBike('${bike.bikeId}')"
+                                    style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer;">
+                                使用
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+
+        } catch (error) {
+            console.error('加载附近车辆失败:', error);
+            document.getElementById('bikesList').innerHTML = `
+                <div class="no-data">
+                    <div class="no-data-icon">⚠️</div>
+                    <div>加载失败: ${error.message}</div>
+                </div>
+            `;
+        }
+    }
+
+    function useThisBike(bikeId) {
+        closeModal('bikesModal');
+        document.getElementById('scanBikeId').value = bikeId;
+        document.getElementById('scanStartPosition').value = '当前位置';
+        showScanModal();
+    }
+
+    // 信用信息
+    function showCreditInfo() {
+        document.getElementById('creditModal').style.display = 'flex';
+
+        const creditStatus = document.getElementById('creditStatus').textContent;
+        const violationCount = parseInt(document.getElementById('violationCount').textContent) || 0;
+
+        let html = `
+            <div style="margin-bottom: 20px;">
+                <div style="background: ${creditStatus === '标记' ? '#FFF3CD' : '#D4EDDA'};
+                          padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong style="font-size: 18px;">
+                        ${creditStatus === '标记' ? '⚠️ 信用已标记' : '✅ 信用良好'}
+                    </strong>
+                    <p style="margin-top: 10px; color: #666;">
+                        违规记录: ${violationCount} 次
+                    </p>
+                </div>
+            </div>
+        `;
+
+        // 显示违规订单
+        if (violationCount > 0 && allOrders) {
+            const violations = allOrders.filter(o => o.parkStatus === '违规');
+
+            html += '<h3 style="margin-bottom: 15px;">违规记录详情</h3>';
+            html += '<div style="max-height: 300px; overflow-y: auto;">';
+
+            violations.forEach(order => {
+                html += `
+                    <div style="border-left: 3px solid #F44336; padding: 12px 15px; margin-bottom: 10px; background: #f8f9fa;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>${order.orderId}</strong>
+                            <small>${formatTime(order.endTime || order.startTime)}</small>
+                        </div>
+                        <div style="color: #666; margin-top: 5px;">
+                            位置: ${order.endPosition || order.startPosition}
+                        </div>
+                        <div style="color: #F44336; font-size: 13px; margin-top: 5px;">
+                            ⚠️ 违规停车
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+        }
+
+        // 信用提示
+        html += `
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                <h4>💡 信用提示</h4>
+                <ul style="color: #666; line-height: 1.6; margin-top: 10px;">
+                    <li>规范停车可维护良好信用</li>
+                    <li>违规停车会被标记并可能收取额外费用</li>
+                    <li>连续3次规范停车可恢复被标记的信用</li>
+                </ul>
+            </div>
+        `;
+
+        document.getElementById('creditContent').innerHTML = html;
+    }
+
+    // 搜索订单
+    function searchOrders() {
+        const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+        if (!keyword) {
+            renderOrders(allOrders);
+            return;
+        }
+
+        const filteredOrders = allOrders.filter(order => {
+            return (
+                (order.orderId && order.orderId.toLowerCase().includes(keyword)) ||
+                (order.startPosition && order.startPosition.toLowerCase().includes(keyword)) ||
+                (order.endPosition && order.endPosition.toLowerCase().includes(keyword)) ||
+                (order.bikeId && order.bikeId.includes(keyword))
+            );
+        });
+
+        renderOrders(filteredOrders);
+
+        if (filteredOrders.length === 0 && keyword) {
+            document.getElementById('ordersTableBody').innerHTML = `
+                <tr>
+                    <td colspan="5" class="no-data">
+                        <div class="no-data-icon">🔍</div>
+                        <div>未找到相关订单</div>
+                        <div style="font-size: 14px; margin-top: 10px;">搜索词: "${keyword}"</div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // 刷新数据
+    function refreshData() {
+        loadUserInfo();
+        loadOrders();
+        checkActiveRide();
+        showNotification('数据已刷新', 'success');
+    }
+
+    // 辅助函数
+    function formatTime(timeString) {
+        if (!timeString) return '--';
+        try {
+            return new Date(timeString).toLocaleString('zh-CN');
+        } catch (e) {
+            return timeString;
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+            <span>${message}</span>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function logout() {
+    // 清除本地存储
+    localStorage.removeItem('userId');
+    sessionStorage.removeItem('userId');
+
+    // 显示退出提示
+    showNotification('已退出登录', 'info');
+
+    // 延迟跳转到首页
+    setTimeout(() => {
+        window.location.href = '/index.html';  // 跳转到你的欢迎页面
+    }, 1000);
+}
+    // 示例数据（用于开发测试）
+    function showExampleOrders() {
+        const exampleOrders = [
+            {
+                orderId: 'O202400001',
+                startTime: '2024-01-15T08:30:00',
+                endTime: '2024-01-15T08:45:00',
+                startPosition: '宿舍区',
+                endPosition: '教学楼A区',
+                fee: 1.50,
+                payStatus: '已支付',
+                parkStatus: '合规',
+                bikeId: '00000001'
+            },
+            {
+                orderId: 'O202400003',
+                startTime: '2024-01-15T10:20:00',
+                endTime: '2024-01-15T10:35:00',
+                startPosition: '教学楼B区',
+                endPosition: '体育馆',
+                fee: 2.00,
+                payStatus: '未支付',
+                parkStatus: '合规',
+                bikeId: '00000004'
+            }
+        ];
+
+        allOrders = exampleOrders;
+        renderOrders(exampleOrders);
+        updateStats(exampleOrders);
+    }
+</script>
+</body>
+</html>
